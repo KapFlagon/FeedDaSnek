@@ -5,29 +5,40 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jpgd.game.utilities.GameAssetManager;
 
 public class FeedDaSnek extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+
+	/*
+	Final Static Variables
+	 */
+	public final static String TITLE = "Feed Da Snek";
+	public final static int V_WIDTH = 480;
+	public final static int V_HEIGHT = 800;
+
+	/*
+	Variables
+	 */
+	private SpriteBatch spriteBatch;
+	private GameAssetManager gameAssetManager;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		spriteBatch = new SpriteBatch();
+		//gameAssetManager = new GameAssetManager();
+
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		spriteBatch .begin();
+		spriteBatch .end();
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		spriteBatch .dispose();
 	}
 }
