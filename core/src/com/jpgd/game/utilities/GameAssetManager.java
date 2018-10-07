@@ -29,13 +29,18 @@ public class GameAssetManager {
         // initiate strings
         //textureAtlasPath = "android/assets/TetrisAtlas.atlas";
 
+        /*
         // call methods to load assets
         loadMusic();
         loadFonts();
         loadImages();
         loadSFX();
+        */
     }
 
+    /*
+    Loader methods
+     */
     public void loadMusic() {
 
     }
@@ -59,10 +64,13 @@ public class GameAssetManager {
 
     public void done() {
         textureAtlas = assetManager.get(textureAtlasPath, TextureAtlas.class);
+        assetManager.finishLoading();
     }
 
     public void dispose() {
         assetManager.dispose();
+        textureAtlas.dispose();
+        skin.dispose();
     }
 
 }

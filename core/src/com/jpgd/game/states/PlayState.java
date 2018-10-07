@@ -1,23 +1,29 @@
-package com.jpgd.game.screens;
+package com.jpgd.game.states;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Tile;
 
-public class Screen_PlayState implements Screen {
+public class PlayState extends State{
 
+    /*
+    Variables
+     */
     private Tile[][] playGrid;
     private float rows, cols;
 
     /*
     Constructors
      */
-    public Screen_PlayState() {
+    public PlayState(FeedDaSnek feedDaSnek) {
+        super(feedDaSnek);
         rows = FeedDaSnek.V_HEIGHT / 16;
         cols = FeedDaSnek.V_WIDTH / 16;
         playGrid = new Tile[(int)rows][(int)cols];
         initGrid();
     }
+
 
     /*
     Other methods
@@ -30,6 +36,10 @@ public class Screen_PlayState implements Screen {
         }
     }
 
+
+    /*
+    Overridden methods
+     */
     @Override
     public void show() {
 
@@ -37,7 +47,11 @@ public class Screen_PlayState implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0.17f, 0.088f, 0.006f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        spriteBatch.begin();
 
+        spriteBatch.end();
     }
 
     @Override
@@ -62,6 +76,6 @@ public class Screen_PlayState implements Screen {
 
     @Override
     public void dispose() {
-
+        super.dispose();
     }
 }

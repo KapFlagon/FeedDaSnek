@@ -1,9 +1,20 @@
-package com.jpgd.game.screens;
+package com.jpgd.game.states;
 
-import com.badlogic.gdx.Screen;
+import com.jpgd.game.FeedDaSnek;
 
-public class Screen_EndState implements Screen {
+public class EndState extends State {
 
+    /*
+    Constructors
+     */
+    public EndState(FeedDaSnek feedDaSnek) {
+        super(feedDaSnek);
+    }
+
+
+    /*
+    Overridden Methods
+     */
     @Override
     public void show() {
 
@@ -36,6 +47,6 @@ public class Screen_EndState implements Screen {
 
     @Override
     public void dispose() {
-
+        super.dispose();
     }
 }

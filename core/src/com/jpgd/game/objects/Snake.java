@@ -7,6 +7,7 @@ public class Snake {
     /*
     Variables
      */
+    private TextureRegion textureRegion;
     private String direction;
     private float headPosX, headPosY;
 
