@@ -23,19 +23,32 @@ public class GameAssetManager {
     private TextureAtlas textureAtlas;
     private Skin skin;
 
+    /*
+    Constructors
+     */
     public GameAssetManager() {
+
         assetManager = new AssetManager();
 
         // initiate strings
-        //textureAtlasPath = "android/assets/TetrisAtlas.atlas";
+        textureAtlasPath = "textures/FeedDaSnek.atlas";
 
+
+        loadImages();
         /*
         // call methods to load assets
         loadMusic();
         loadFonts();
-        loadImages();
         loadSFX();
         */
+    }
+
+
+    /*
+    Getters
+     */
+    public TextureAtlas getTextureAtlas() {
+        return textureAtlas;
     }
 
     /*
@@ -52,6 +65,7 @@ public class GameAssetManager {
 
     public void loadImages() {
         assetManager.load(textureAtlasPath, TextureAtlas.class);
+        assetManager.getLogger().info("TextureAtlas asset set for loading");
     }
 
     public void loadSFX() {
@@ -63,14 +77,20 @@ public class GameAssetManager {
     }
 
     public void done() {
-        textureAtlas = assetManager.get(textureAtlasPath, TextureAtlas.class);
         assetManager.finishLoading();
+
+        if(assetManager.isLoaded(textureAtlasPath)){
+            assetManager.getLogger().info("TextureAtlas loaded");
+            textureAtlas = assetManager.get(textureAtlasPath, TextureAtlas.class);
+        } else {
+            assetManager.getLogger().info("TextureAtlas not loaded");
+        }
+
     }
 
     public void dispose() {
-        assetManager.dispose();
-        textureAtlas.dispose();
-        skin.dispose();
+        assetManager.unload(textureAtlasPath);
+
     }
 
 }

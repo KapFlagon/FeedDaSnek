@@ -22,6 +22,7 @@ public class FeedDaSnek extends Game {
 	private GameAssetManager gameAssetManager;
 	private OrthographicCamera orthographicCamera;
 	private float speed;
+	private int score;
 
 	/*
 	Getters
@@ -46,10 +47,13 @@ public class FeedDaSnek extends Game {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
+
 		gameAssetManager = new GameAssetManager();
+		gameAssetManager.done();
 		orthographicCamera = new OrthographicCamera();
 		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		speed = 1;
+		score = 0;
 
 		this.setScreen(new PlayState(this));
 	}

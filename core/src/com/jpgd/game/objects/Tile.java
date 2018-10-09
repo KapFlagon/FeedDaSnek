@@ -2,6 +2,9 @@ package com.jpgd.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.Random;
 
 public class Tile {
 
@@ -9,18 +12,20 @@ public class Tile {
     Variables
      */
     private TextureRegion textureRegion;
-    private float posX, posY;
+    private Vector2 position;
     private float width, height;
     private int value;
+    private Random randomizer;
 
 
     /*
     Constructors
      */
-    public Tile(TextureRegion textureRegion, float posX, float posY) {
+    public Tile(TextureRegion textureRegion) {
+        randomizer = new Random();
+
         this.textureRegion = textureRegion;
-        this.posX = posX;
-        this.posY = posY;
+        ransomizePosition();
         this.width = textureRegion.getRegionWidth();
         this.height = textureRegion.getRegionHeight();
         value = 0;
@@ -35,11 +40,15 @@ public class Tile {
     }
 
     public float getPosX() {
-        return posX;
+        return position.x;
     }
 
     public float getPosY() {
-        return posY;
+        return position.y;
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 
     public float getWidth() {
@@ -62,20 +71,12 @@ public class Tile {
         this.textureRegion = textureRegion;
     }
 
-    public void setPosX(float posX) {
-        this.posX = posX;
+    public void setPosition(float posX, float posY) {
+        this.position.set(posX, posY);
     }
 
-    public void setPosY(float posY) {
-        this.posY = posY;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
+    public void setPosition(Vector2 position) {
+        this.position = position;
     }
 
     public void setValue(int value) {
@@ -86,8 +87,12 @@ public class Tile {
     /*
     Other Methods
     */
+    public void ransomizePosition() {
+        position.set(randomizer.nextFloat(), randomizer.nextFloat());
+    }
+
     public void render(SpriteBatch spriteBatch) {
-        spriteBatch.draw(textureRegion, posX, posY, width, height);
+        spriteBatch.draw(textureRegion, position.x, position.y, width, height);
     }
 
 

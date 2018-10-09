@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Food extends Tile {
 
-    public Food(TextureRegion textureRegion, float posX, float posY) {
-        super(textureRegion, posX, posY);
+    public Food(TextureRegion textureRegion) {
+        super(textureRegion);
         setValue(100);
     }
 }

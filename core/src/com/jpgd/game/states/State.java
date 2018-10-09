@@ -3,6 +3,7 @@ package com.jpgd.game.states;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.utilities.GameAssetManager;
 
@@ -14,6 +15,7 @@ public abstract class State implements Screen {
     protected SpriteBatch spriteBatch;
     protected GameAssetManager gameAssetManager;
     protected OrthographicCamera orthographicCamera;
+    protected Viewport viewport;
 
 
     /*
@@ -23,6 +25,7 @@ public abstract class State implements Screen {
         this.spriteBatch = feedDaSnek.getSpriteBatch();
         this.gameAssetManager = feedDaSnek.getGameAssetManager();
         this.orthographicCamera = feedDaSnek.getOrthographicCamera();
+
     }
 
 

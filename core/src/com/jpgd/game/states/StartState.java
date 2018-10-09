@@ -1,14 +1,21 @@
 package com.jpgd.game.states;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.jpgd.game.FeedDaSnek;
 
 public class StartState extends State {
+
+    private Stage stage;
+    private Table table;
 
     /*
     Constructors
      */
     public StartState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
+        stage = new Stage();
+        table = new Table();
     }
 
 

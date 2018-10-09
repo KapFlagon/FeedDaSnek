@@ -3,37 +3,62 @@ package com.jpgd.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.jpgd.game.FeedDaSnek;
+import com.jpgd.game.objects.Food;
+import com.jpgd.game.objects.Obstacle;
+import com.jpgd.game.objects.Snake;
 import com.jpgd.game.objects.Tile;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class PlayState extends State{
 
     /*
     Variables
      */
-    private Tile[][] playGrid;
     private float rows, cols;
+
+    private Random randomizer;
+    private Snake snake;
+    private ArrayList<Food> foods;
+    private ArrayList<Obstacle> obstacles;
+
 
     /*
     Constructors
      */
     public PlayState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
+
+        randomizer = new Random();
+
         rows = FeedDaSnek.V_HEIGHT / 16;
         cols = FeedDaSnek.V_WIDTH / 16;
-        playGrid = new Tile[(int)rows][(int)cols];
-        initGrid();
+
+        snake = new Snake(gameAssetManager.getTextureAtlas());
+        snake.initializeSnake(randomizer);
+        foods = new ArrayList<Food>();
+        obstacles = new ArrayList<Obstacle>();
     }
 
 
     /*
     Other methods
      */
-    public void initGrid() {
-        for(int rowIter = 0; rowIter < rows; rowIter++) {
-            for(int colIter = 0; colIter < cols; colIter++) {
-
-            }
+    public void update(float delta) {
+        spriteBatch.begin();
+        snake.render(spriteBatch);
+        for(Food food : foods) {
+            food.render(spriteBatch);
         }
+        for(Obstacle obstacle : obstacles) {
+            obstacle.render(spriteBatch);
+        }
+        spriteBatch.end();
+    }
+
+    public void processInput(float delta) {
+
     }
 
 
@@ -47,11 +72,10 @@ public class PlayState extends State{
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.17f, 0.088f, 0.006f, 1);
+        Gdx.gl.glClearColor(0.3f, 0.09f, 0.006f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        spriteBatch.begin();
-
-        spriteBatch.end();
+        processInput(delta);
+        update(delta);
     }
 
     @Override
