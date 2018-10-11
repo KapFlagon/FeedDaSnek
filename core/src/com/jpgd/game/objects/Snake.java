@@ -1,5 +1,6 @@
 package com.jpgd.game.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,6 +17,7 @@ public class Snake {
     private int size;
     private Vector2 headPosition, direction;
     private ArrayList<Vector2> bodyPoints;
+    private float texWidth, texHeight, speed;
 
 
     /*
@@ -27,17 +29,24 @@ public class Snake {
         tail_TexReg = textureAtlas.findRegion("Snake_Tail");
         bodyStraight_TexReg = textureAtlas.findRegion("Snake_Body_S");
         bodyBend_TexReg = textureAtlas.findRegion("Snake_Body_B");
+        texWidth = head_TexReg.getRegionWidth();
+        texHeight = head_TexReg.getRegionHeight();
     }
 
     /*
     Getters
      */
-
+    public float getSpeed() {
+        return speed;
+    }
 
 
     /*
     Setters
      */
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 
 
 
@@ -45,15 +54,29 @@ public class Snake {
     Other methods
      */
     public void initializeSnake(Random randomizer) {
-        size = 2;   // Offset by 1, head is not counted in the size
+
+        size = 3;
         // Initialize the direction as 0, changed at first key press
         direction = new Vector2(0, 0);
         headPosition = new Vector2(0, 0);
-        generateStartPosition(randomizer);
         bodyPoints = new ArrayList<Vector2>();
+        generateStartPosition(randomizer);
+
     }
     private void generateStartPosition(Random randomizer) {
-        headPosition.set(randomizer.nextFloat(), randomizer.nextFloat());
+        float tempX, tempY;
+
+        float screenX = Gdx.app.getGraphics().getWidth();
+        float screenY = Gdx.app.getGraphics().getHeight();
+
+        tempX = randomizer.nextInt((int)(screenX / texWidth));
+        tempY = randomizer.nextInt((int)(screenY / texHeight));
+
+        headPosition.set(tempX * texWidth, tempY * texHeight);
+        bodyPoints.add(headPosition);
+
+        // Select random side to add other pieces too
+        // Ensure that there is enough space for 2 additional body parts
     }
 
     public void move() {

@@ -39,6 +39,8 @@ public class PlayState extends State{
         snake.initializeSnake(randomizer);
         foods = new ArrayList<Food>();
         obstacles = new ArrayList<Obstacle>();
+
+
     }
 
 
