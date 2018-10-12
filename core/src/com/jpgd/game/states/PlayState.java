@@ -38,7 +38,10 @@ public class PlayState extends State{
         snake = new Snake(gameAssetManager.getTextureAtlas());
         snake.initializeSnake(randomizer);
         foods = new ArrayList<Food>();
+        foods.add(new Food(gameAssetManager.getTextureAtlas()));
+
         obstacles = new ArrayList<Obstacle>();
+        obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
 
 
     }
@@ -49,13 +52,21 @@ public class PlayState extends State{
      */
     public void update(float delta) {
         spriteBatch.begin();
+
         snake.render(spriteBatch);
+
         for(Food food : foods) {
+            // if(food.getPosition().x )
+            /*
+            if food x or food y shares a position with the existing snake or obstacle, randomize to another position
+             */
             food.render(spriteBatch);
         }
+
         for(Obstacle obstacle : obstacles) {
             obstacle.render(spriteBatch);
         }
+
         spriteBatch.end();
     }
 

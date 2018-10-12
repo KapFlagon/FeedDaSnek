@@ -1,5 +1,6 @@
 package com.jpgd.game.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -15,17 +16,14 @@ public class Tile {
     private Vector2 position;
     private float width, height;
     private int value;
-    private Random randomizer;
 
 
     /*
     Constructors
      */
     public Tile(TextureRegion textureRegion) {
-        randomizer = new Random();
-
+        //position.set(new Vector2(10,10));
         this.textureRegion = textureRegion;
-        ransomizePosition();
         this.width = textureRegion.getRegionWidth();
         this.height = textureRegion.getRegionHeight();
         value = 0;
@@ -87,8 +85,17 @@ public class Tile {
     /*
     Other Methods
     */
-    public void ransomizePosition() {
-        position.set(randomizer.nextFloat(), randomizer.nextFloat());
+    public Tile randomizePosition(Random randomizer) {
+        float tempX, tempY;
+
+        float screenX = Gdx.app.getGraphics().getWidth();
+        float screenY = Gdx.app.getGraphics().getHeight();
+
+        tempX = randomizer.nextInt((int)(screenX / width));
+        tempY = randomizer.nextInt((int)(screenY / height));
+
+        position.set(tempX * width, tempY * height);
+        return this;
     }
 
     public void render(SpriteBatch spriteBatch) {

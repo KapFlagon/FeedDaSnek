@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 import java.util.Random;
 
+import sun.font.TrueTypeFont;
+
 public class Snake {
 
     /*
@@ -60,6 +62,7 @@ public class Snake {
         direction = new Vector2(0, 0);
         headPosition = new Vector2(0, 0);
         bodyPoints = new ArrayList<Vector2>();
+
         generateStartPosition(randomizer);
 
     }
@@ -73,10 +76,50 @@ public class Snake {
         tempY = randomizer.nextInt((int)(screenY / texHeight));
 
         headPosition.set(tempX * texWidth, tempY * texHeight);
+        System.out.println("headPosition.x: " + headPosition.x + "\theadPosition.y: " + headPosition.y);
         bodyPoints.add(headPosition);
 
         // Select random side to add other pieces too
         // Ensure that there is enough space for 2 additional body parts
+        float widthSpaceNeeded = texWidth * size;
+        float heightSpaceNeeded = texHeight * size;
+
+        boolean initialOrientation = randomizer.nextBoolean();
+
+        if (initialOrientation == true) {
+            // Orient via X axis
+            System.out.println("Oriented on x axis");
+            for (int sizeIter = 1; sizeIter < size; sizeIter++) {
+                tempX = 0;
+
+                if (widthSpaceNeeded > (screenX - (headPosition.x + texWidth))) {
+                    // Add pieces to left of headPosition.x
+                    tempX = headPosition.x - (texWidth * sizeIter);
+                } else {
+                    // Add pieces to right of headPosition.x
+                    tempX = headPosition.x + (texWidth * sizeIter);
+                }
+                System.out.println("X point: " + tempX + "\tY point: " + headPosition.y);
+                bodyPoints.add(new Vector2(tempX, headPosition.y));
+            }
+        } else {
+            // Orient via Y axis
+            System.out.println("Oriented on x axis");
+            for (int sizeIter = 1; sizeIter < size; sizeIter++) {
+                tempY = 0;
+
+                if (heightSpaceNeeded > (screenY - (headPosition.y + texHeight))) {
+                    // Add pieces below headPosition.y
+                    tempY = headPosition.y - (texHeight * sizeIter);
+                } else {
+                    // Add pieces above headPosition.y
+                    tempY = headPosition.y + (texHeight * sizeIter);
+                }
+                System.out.println("X point: " + headPosition.x + "\tY point: " + tempY);
+                bodyPoints.add(new Vector2(headPosition.x, tempY));
+            }
+        }
+
     }
 
     public void move() {
@@ -110,7 +153,7 @@ public class Snake {
                     3. To the right of current vector
                 Select
                  */
-                spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).x, bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight());
+                spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight());
             }
         }
     }
