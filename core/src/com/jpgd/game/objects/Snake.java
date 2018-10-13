@@ -17,7 +17,8 @@ public class Snake {
      */
     private TextureRegion head_TexReg, tail_TexReg, bodyStraight_TexReg, bodyBend_TexReg;
     private int size;
-    private Vector2 headPosition, direction;
+    private Vector2 headPosition;
+    private Direction direction;
     private ArrayList<Vector2> bodyPoints;
     private float texWidth, texHeight, speed;
 
@@ -31,8 +32,11 @@ public class Snake {
         tail_TexReg = textureAtlas.findRegion("Snake_Tail");
         bodyStraight_TexReg = textureAtlas.findRegion("Snake_Body_S");
         bodyBend_TexReg = textureAtlas.findRegion("Snake_Body_B");
+
         texWidth = head_TexReg.getRegionWidth();
         texHeight = head_TexReg.getRegionHeight();
+
+
     }
 
     /*
@@ -40,6 +44,14 @@ public class Snake {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    public ArrayList<Vector2> getBodyPoints() {
+        return bodyPoints;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
 
@@ -59,7 +71,7 @@ public class Snake {
 
         size = 3;
         // Initialize the direction as 0, changed at first key press
-        direction = new Vector2(0, 0);
+        this.direction = Direction.NONE;
         headPosition = new Vector2(0, 0);
         bodyPoints = new ArrayList<Vector2>();
 
@@ -76,7 +88,6 @@ public class Snake {
         tempY = randomizer.nextInt((int)(screenY / texHeight));
 
         headPosition.set(tempX * texWidth, tempY * texHeight);
-        System.out.println("headPosition.x: " + headPosition.x + "\theadPosition.y: " + headPosition.y);
         bodyPoints.add(headPosition);
 
         // Select random side to add other pieces too
@@ -88,7 +99,6 @@ public class Snake {
 
         if (initialOrientation == true) {
             // Orient via X axis
-            System.out.println("Oriented on x axis");
             for (int sizeIter = 1; sizeIter < size; sizeIter++) {
                 tempX = 0;
 
@@ -99,12 +109,10 @@ public class Snake {
                     // Add pieces to right of headPosition.x
                     tempX = headPosition.x + (texWidth * sizeIter);
                 }
-                System.out.println("X point: " + tempX + "\tY point: " + headPosition.y);
                 bodyPoints.add(new Vector2(tempX, headPosition.y));
             }
         } else {
             // Orient via Y axis
-            System.out.println("Oriented on x axis");
             for (int sizeIter = 1; sizeIter < size; sizeIter++) {
                 tempY = 0;
 
@@ -115,7 +123,7 @@ public class Snake {
                     // Add pieces above headPosition.y
                     tempY = headPosition.y + (texHeight * sizeIter);
                 }
-                System.out.println("X point: " + headPosition.x + "\tY point: " + tempY);
+
                 bodyPoints.add(new Vector2(headPosition.x, tempY));
             }
         }
@@ -124,9 +132,17 @@ public class Snake {
 
     public void move() {
 
+        Vector2 tempVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * 16)), (bodyPoints.get(0).y + (direction.getVector().y * 16)));
+
+        if (tempVec.epsilonEquals(bodyPoints.get(0))) {
+            // Do nothing
+        } else {
+            bodyPoints.add(0, tempVec);
+            bodyPoints.remove(bodyPoints.size()-1);
+        }
     }
 
-    public void changeDirection(Vector2 direction) {
+    public void changeDirection(Direction direction) {
         this.direction = direction;
     }
 
@@ -140,10 +156,13 @@ public class Snake {
 
     public void render(SpriteBatch spriteBatch) {
         for(int bodyPointsIter = 0; bodyPointsIter < bodyPoints.size(); bodyPointsIter++) {
+            System.out.println("bodyPoint number " + bodyPointsIter + "\t\tValue: " + bodyPoints.get(bodyPointsIter));
             if(bodyPointsIter == 0) {
                 spriteBatch.draw(head_TexReg, headPosition.x, headPosition.y, head_TexReg.getRegionWidth(),head_TexReg.getRegionHeight());
+                System.out.println("drawing head");
             } else if (bodyPointsIter == (bodyPoints.size()-1)) {
                 spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight());
+                System.out.println("drawing tail");
             } else {
                 /*
                 Compare current vector to next vector
@@ -154,7 +173,9 @@ public class Snake {
                 Select
                  */
                 spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight());
+                System.out.println("drawing straight bits");
             }
         }
+        System.out.println("\n");
     }
 }

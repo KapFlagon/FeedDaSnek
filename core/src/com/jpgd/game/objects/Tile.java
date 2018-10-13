@@ -16,17 +16,19 @@ public class Tile {
     private Vector2 position;
     private float width, height;
     private int value;
+    private boolean eaten;
 
 
     /*
     Constructors
      */
     public Tile(TextureRegion textureRegion) {
-        //position.set(new Vector2(10,10));
+        this.position = new Vector2(0, 0);
         this.textureRegion = textureRegion;
         this.width = textureRegion.getRegionWidth();
         this.height = textureRegion.getRegionHeight();
-        value = 0;
+        this.value = 0;
+        this.eaten = false;
     }
 
 
@@ -61,6 +63,10 @@ public class Tile {
         return value;
     }
 
+    public boolean getEaten() {
+        return eaten;
+    }
+
 
     /*
     Setters
@@ -81,11 +87,15 @@ public class Tile {
         this.value = value;
     }
 
+    public void setEaten(boolean eaten) {
+        this.eaten = eaten;
+    }
+
 
     /*
     Other Methods
     */
-    public Tile randomizePosition(Random randomizer) {
+    public void randomizePosition(Random randomizer) {
         float tempX, tempY;
 
         float screenX = Gdx.app.getGraphics().getWidth();
@@ -94,8 +104,7 @@ public class Tile {
         tempX = randomizer.nextInt((int)(screenX / width));
         tempY = randomizer.nextInt((int)(screenY / height));
 
-        position.set(tempX * width, tempY * height);
-        return this;
+        this.position.set(tempX * width, tempY * height);
     }
 
     public void render(SpriteBatch spriteBatch) {
