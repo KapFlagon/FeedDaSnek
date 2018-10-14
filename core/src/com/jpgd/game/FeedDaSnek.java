@@ -58,7 +58,10 @@ public class FeedDaSnek extends Game {
 
 	@Override
 	public void render () {
+		orthographicCamera.update();
+		spriteBatch.setProjectionMatrix(orthographicCamera.combined);
 		super.render();		// Call super class "Game"'s render method to use screens
+
 	}
 	
 	@Override

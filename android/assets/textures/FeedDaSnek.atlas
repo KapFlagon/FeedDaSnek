@@ -6,42 +6,42 @@ filter: Nearest,Nearest
 repeat: none
 Bird
   rotate: false
-  xy: 2, 2
+  xy: 20, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Ground
   rotate: false
-  xy: 20, 20
+  xy: 304, 172
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Mouse
   rotate: false
-  xy: 304, 172
+  xy: 304, 190
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 PlayButton_Up
   rotate: false
-  xy: 2, 38
+  xy: 2, 56
   size: 300, 150
   orig: 300, 150
   offset: 0, 0
   index: -1
 Poison
   rotate: false
-  xy: 304, 154
+  xy: 322, 190
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Body_B
   rotate: false
-  xy: 2, 20
+  xy: 2, 38
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -55,14 +55,14 @@ Snake_Body_S
   index: -1
 Snake_Head
   rotate: false
-  xy: 2, 20
+  xy: 20, 20
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Tail
   rotate: false
-  xy: 2, 20
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
@@ -19,12 +20,13 @@ public class PlayState extends State{
     /*
     Variables
      */
-    private float rows, cols;
+    private float rows, cols, dt_total;
 
     private Random randomizer;
     private Snake snake;
     private ArrayList<Food> foods;
     private ArrayList<Obstacle> obstacles;
+    private int score;
 
 
     /*
@@ -47,6 +49,8 @@ public class PlayState extends State{
         obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
 
         initializePositions();
+        dt_total = 0;
+        score = 0;
 
     }
 
@@ -55,19 +59,45 @@ public class PlayState extends State{
     Other methods
      */
     public void update(float delta) {
-        spriteBatch.begin();
 
-        snake.render(spriteBatch);
+        // Check if snake head moves out of bounds
+        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
+           // Snake has extended outside of boundaries of screen, game over
+            System.out.println("Game Over:\tSnake went out of bounds!");
+            System.exit(-1);
+        }
 
+        // Check if snake head touches any other part of the snakes
+        for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
+            if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
+                System.out.println("Game Over:\tSnake ate itself!");
+                System.exit(-1);
+            }
+        }
+
+        // Check if snake has eaten
         for(Food food : foods) {
-            food.render(spriteBatch);
+            if(snake.getBodyPoints().get(0).epsilonEquals(food.getPosition())) {
+                // Shares position, snake has eaten food item
+                score = score + food.getValue();
+                food.randomizePosition(randomizer);
+                snake.grow();
+            }
         }
 
         for(Obstacle obstacle : obstacles) {
-            obstacle.render(spriteBatch);
+            if(snake.getBodyPoints().get(0).epsilonEquals(obstacle.getPosition())) {
+                // Shares position, snake has eaten food item
+                score = score + obstacle.getValue();
+                obstacle.randomizePosition(randomizer);
+                snake.shrink();
+                if(snake.getBodyPoints().size() < 3) {
+                    System.out.println("Game Over:\tSnake ate too much poison!");
+                    System.exit(-1);
+                }
+            }
         }
 
-        spriteBatch.end();
     }
 
     public void processInput(float delta) {
@@ -110,13 +140,28 @@ public class PlayState extends State{
                 snake.changeDirection(Direction.DOWN);
             }
         }
-        snake.move();
+        snake.move(delta);
+    }
+
+    public void draw(float delta) {
+        spriteBatch.begin();
+
+        snake.render(spriteBatch);
+
+        for(Food food : foods) {
+            food.render(spriteBatch);
+        }
+
+        for(Obstacle obstacle : obstacles) {
+            obstacle.render(spriteBatch);
+        }
+
+        spriteBatch.end();
     }
 
     public void initializePositions() {
         snake.initializeSnake(randomizer);
         refreshTilePositions();
-
     }
 
     public void refreshTilePositions() {
@@ -127,8 +172,9 @@ public class PlayState extends State{
             do {
                 food.randomizePosition(randomizer);
                 for(int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                    if ((food.getPosition().x == snake.getBodyPoints().get(snakeIter).x) || (food.getPosition().y == snake.getBodyPoints().get(snakeIter).y)) {
+                    if (food.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
                         foodsFlag = true;
+                        continue;
                     } else {
                         foodsFlag = false;
                     }
@@ -141,8 +187,17 @@ public class PlayState extends State{
                 obstacle.randomizePosition(randomizer);
 
                 for (int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                    if ((obstacle.getPosition().x == snake.getBodyPoints().get(snakeIter).x) || (obstacle.getPosition().y == snake.getBodyPoints().get(snakeIter).y)) {
+                    if (obstacle.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
                         obstaclesFlag = true;
+                        continue;
+                    } else {
+                        obstaclesFlag = false;
+                    }
+                }
+                for(Food food : foods) {
+                    if(obstacle.getPosition().epsilonEquals(food.getPosition())) {
+                        obstaclesFlag = true;
+                        continue;
                     } else {
                         obstaclesFlag = false;
                     }
@@ -162,10 +217,11 @@ public class PlayState extends State{
 
     @Override
     public void render(float delta) {
-        processInput(delta);
-        Gdx.gl.glClearColor(0.3f, 0.09f, 0.006f, 1);
+        Gdx.gl.glClearColor(0.2f, 0.1f, 0.016f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        processInput(delta);
         update(delta);
+        draw(delta);
     }
 
     @Override

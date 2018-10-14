@@ -17,10 +17,10 @@ public class Snake {
      */
     private TextureRegion head_TexReg, tail_TexReg, bodyStraight_TexReg, bodyBend_TexReg;
     private int size;
-    private Vector2 headPosition;
+    private Vector2 headPosition, tempDirectionVec;
     private Direction direction;
     private ArrayList<Vector2> bodyPoints;
-    private float texWidth, texHeight, speed;
+    private float texWidth, texHeight, speed, dt_total, rotationVal;
 
 
     /*
@@ -36,7 +36,8 @@ public class Snake {
         texWidth = head_TexReg.getRegionWidth();
         texHeight = head_TexReg.getRegionHeight();
 
-
+        dt_total = 0;
+        rotationVal = 0;
     }
 
     /*
@@ -73,6 +74,7 @@ public class Snake {
         // Initialize the direction as 0, changed at first key press
         this.direction = Direction.NONE;
         headPosition = new Vector2(0, 0);
+        tempDirectionVec = new Vector2(0, 0);
         bodyPoints = new ArrayList<Vector2>();
 
         generateStartPosition(randomizer);
@@ -130,52 +132,72 @@ public class Snake {
 
     }
 
-    public void move() {
+    public void move(float delta) {
+        dt_total = dt_total + delta;
+        if (dt_total > 0.08f) {
+            tempDirectionVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * 16)), (bodyPoints.get(0).y + (direction.getVector().y * 16)));
 
-        Vector2 tempVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * 16)), (bodyPoints.get(0).y + (direction.getVector().y * 16)));
-
-        if (tempVec.epsilonEquals(bodyPoints.get(0))) {
-            // Do nothing
-        } else {
-            bodyPoints.add(0, tempVec);
-            bodyPoints.remove(bodyPoints.size()-1);
+            if (tempDirectionVec.epsilonEquals(bodyPoints.get(0))) {
+                // Do nothing
+            } else {
+                bodyPoints.add(0, tempDirectionVec);
+                bodyPoints.remove(bodyPoints.size() - 1);
+            }
+            dt_total = 0;
         }
+    }
+
+    public float determineHeadRotation() {
+        float rotation = 0;
+        switch (direction) {
+            case NONE:
+                // Need to determine based on current orientation;
+                break;
+            case LEFT:
+                rotation = 90;
+                break;
+            case RIGHT:
+                rotation = 270;
+                break;
+            case UP:
+                rotation = 0;
+                break;
+            case DOWN:
+                rotation = 180;
+                break;
+        }
+        return rotation;
     }
 
     public void changeDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public void eat() {
-
+    public void grow() {
+        // Duplicates last item and adds to end of ArrayList
+        bodyPoints.add(bodyPoints.get(bodyPoints.size() - 1));
     }
 
-    public void grow() {
-
+    public void shrink() {
+        bodyPoints.remove(bodyPoints.size() - 1);
     }
 
     public void render(SpriteBatch spriteBatch) {
         for(int bodyPointsIter = 0; bodyPointsIter < bodyPoints.size(); bodyPointsIter++) {
-            System.out.println("bodyPoint number " + bodyPointsIter + "\t\tValue: " + bodyPoints.get(bodyPointsIter));
             if(bodyPointsIter == 0) {
-                spriteBatch.draw(head_TexReg, headPosition.x, headPosition.y, head_TexReg.getRegionWidth(),head_TexReg.getRegionHeight());
-                System.out.println("drawing head");
+                rotationVal = determineHeadRotation();
+                spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(),head_TexReg.getRegionHeight(), 1, 1, rotationVal);
             } else if (bodyPointsIter == (bodyPoints.size()-1)) {
                 spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight());
-                System.out.println("drawing tail");
             } else {
                 /*
                 Compare current vector to next vector
-                Next vector is either:
-                    1. straight ahead of current vector
-                    2. To the left of current vector
-                    3. To the right of current vector
                 Select
                  */
+
                 spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight());
-                System.out.println("drawing straight bits");
             }
+            rotationVal = 0;
         }
-        System.out.println("\n");
     }
 }
