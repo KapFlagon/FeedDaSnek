@@ -3,15 +3,11 @@ package com.jpgd.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
 import com.jpgd.game.objects.Obstacle;
 import com.jpgd.game.objects.Snake;
-import com.jpgd.game.objects.Tile;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,8 +16,7 @@ public class PlayState extends State{
     /*
     Variables
      */
-    private float rows, cols, dt_total;
-
+    private float dt_total;
     private Random randomizer;
     private Snake snake;
     private ArrayList<Food> foods;
@@ -36,9 +31,6 @@ public class PlayState extends State{
         super(feedDaSnek);
 
         randomizer = new Random();
-
-        rows = FeedDaSnek.V_HEIGHT / 16;
-        cols = FeedDaSnek.V_WIDTH / 16;
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
 
@@ -217,7 +209,9 @@ public class PlayState extends State{
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.2f, 0.1f, 0.016f, 1);
+        //Gdx.gl.glClearColor(0.2f, 0.1f, 0.016f, 1);
+        // W3 schools "SaddleBrown" colour
+        Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         processInput(delta);
         update(delta);

@@ -3,7 +3,7 @@ package com.jpgd.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.jpgd.game.states.PlayState;
+import com.jpgd.game.states.*;
 import com.jpgd.game.utilities.GameAssetManager;
 
 public class FeedDaSnek extends Game {
@@ -26,7 +26,6 @@ public class FeedDaSnek extends Game {
 	/*
 	Getters
 	 */
-
 	public SpriteBatch getSpriteBatch() {
 		return spriteBatch;
 	}
@@ -40,8 +39,8 @@ public class FeedDaSnek extends Game {
 	}
 
 	/*
-            Overridden methods from "Game" class
-             */
+    Overridden methods from "Game" class
+    */
 	// The "Create()" method replaces a constructor for this class...
 	@Override
 	public void create () {
@@ -53,7 +52,8 @@ public class FeedDaSnek extends Game {
 		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		score = 0;
 
-		this.setScreen(new PlayState(this));
+		//this.setScreen(new PlayState(this));
+		this.setScreen(new StartState(this));
 	}
 
 	@Override

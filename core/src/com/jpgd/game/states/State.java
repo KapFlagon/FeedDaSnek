@@ -12,6 +12,7 @@ public abstract class State implements Screen {
     /*
     Variables
      */
+    protected FeedDaSnek feedDaSnek;
     protected SpriteBatch spriteBatch;
     protected GameAssetManager gameAssetManager;
     protected OrthographicCamera orthographicCamera;
@@ -22,10 +23,10 @@ public abstract class State implements Screen {
     Constructors
      */
     public State(FeedDaSnek feedDaSnek) {
+        this.feedDaSnek = feedDaSnek;
         this.spriteBatch = feedDaSnek.getSpriteBatch();
         this.gameAssetManager = feedDaSnek.getGameAssetManager();
         this.orthographicCamera = feedDaSnek.getOrthographicCamera();
-
     }
 
 

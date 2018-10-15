@@ -1,69 +1,69 @@
 
 FeedDaSnek.png
-size: 512,256
+size: 512,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Bird
   rotate: false
-  xy: 20, 38
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-Ground
-  rotate: false
-  xy: 304, 172
+  xy: 484, 956
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Mouse
   rotate: false
-  xy: 304, 190
+  xy: 2, 20
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 PlayButton_Up
   rotate: false
-  xy: 2, 56
+  xy: 2, 38
   size: 300, 150
   orig: 300, 150
   offset: 0, 0
   index: -1
 Poison
   rotate: false
-  xy: 322, 190
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Body_B
   rotate: false
-  xy: 2, 38
+  xy: 484, 974
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Body_S
   rotate: false
-  xy: 2, 20
+  xy: 304, 172
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Head
   rotate: false
-  xy: 20, 20
+  xy: 304, 154
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Snake_Tail
   rotate: false
-  xy: 2, 2
+  xy: 20, 20
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+Start_BG
+  rotate: false
+  xy: 2, 190
+  size: 480, 800
+  orig: 480, 800
   offset: 0, 0
   index: -1
