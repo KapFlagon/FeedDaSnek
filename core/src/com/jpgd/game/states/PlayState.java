@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
+import com.jpgd.game.objects.GameOver;
 import com.jpgd.game.objects.Obstacle;
 import com.jpgd.game.objects.Snake;
 import java.util.ArrayList;
@@ -55,15 +56,15 @@ public class PlayState extends State{
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
            // Snake has extended outside of boundaries of screen, game over
-            System.out.println("Game Over:\tSnake went out of bounds!");
-            System.exit(-1);
+            checkForNewHighScore();
+            feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
         }
 
         // Check if snake head touches any other part of the snakes
         for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
             if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
-                System.out.println("Game Over:\tSnake ate itself!");
-                System.exit(-1);
+                checkForNewHighScore();
+                feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
             }
         }
 
@@ -195,6 +196,13 @@ public class PlayState extends State{
                     }
                 }
             } while(obstaclesFlag == true);
+        }
+    }
+
+    public void checkForNewHighScore() {
+        if (score > feedDaSnek.getPreferences().getInteger("highscore", 0)) {
+            feedDaSnek.getPreferences().putInteger("highscore", score);
+            feedDaSnek.getPreferences().flush();
         }
     }
 

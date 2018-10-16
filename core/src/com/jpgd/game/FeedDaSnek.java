@@ -1,6 +1,8 @@
 package com.jpgd.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jpgd.game.states.*;
@@ -21,7 +23,7 @@ public class FeedDaSnek extends Game {
 	private SpriteBatch spriteBatch;
 	private GameAssetManager gameAssetManager;
 	private OrthographicCamera orthographicCamera;
-	private int score;
+	private Preferences preferences;
 
 	/*
 	Getters
@@ -38,6 +40,10 @@ public class FeedDaSnek extends Game {
 		return orthographicCamera;
 	}
 
+	public Preferences getPreferences() {
+		return preferences;
+	}
+
 	/*
     Overridden methods from "Game" class
     */
@@ -50,7 +56,8 @@ public class FeedDaSnek extends Game {
 		gameAssetManager.done();
 		orthographicCamera = new OrthographicCamera();
 		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
-		score = 0;
+		preferences = Gdx.app.getPreferences("Preferences");
+
 
 		//this.setScreen(new PlayState(this));
 		this.setScreen(new StartState(this));

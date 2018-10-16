@@ -35,10 +35,10 @@ public class GameAssetManager {
 
 
         loadImages();
+        loadFonts();
         /*
         // call methods to load assets
         loadMusic();
-        loadFonts();
         loadSFX();
         */
     }
@@ -49,6 +49,14 @@ public class GameAssetManager {
      */
     public TextureAtlas getTextureAtlas() {
         return textureAtlas;
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
+
+    public Label.LabelStyle getLabelStyle() {
+        return labelStyle;
     }
 
     /*
@@ -85,6 +93,8 @@ public class GameAssetManager {
         } else {
             assetManager.getLogger().info("TextureAtlas not loaded");
         }
+
+
 
     }
 
