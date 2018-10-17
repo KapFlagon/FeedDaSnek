@@ -53,6 +53,10 @@ public class PlayState extends State{
      */
     public void update(float delta) {
 
+        boolean foodsFlag = false;
+        boolean obstaclesFlag = false;
+
+
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
            // Snake has extended outside of boundaries of screen, game over
@@ -73,8 +77,18 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(food.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + food.getValue();
-                food.randomizePosition(randomizer);
                 snake.grow();
+                do {
+                    food.randomizePosition(randomizer);
+                    for(int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
+                        if (food.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
+                            foodsFlag = true;
+                            continue;
+                        } else {
+                            foodsFlag = false;
+                        }
+                    }
+                } while(foodsFlag == true);
             }
         }
 
@@ -82,11 +96,31 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(obstacle.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + obstacle.getValue();
-                obstacle.randomizePosition(randomizer);
                 snake.shrink();
+                do {
+                    obstacle.randomizePosition(randomizer);
+
+                    for (int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
+                        if (obstacle.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
+                            obstaclesFlag = true;
+                            continue;
+                        } else {
+                            obstaclesFlag = false;
+                        }
+                    }
+                    for(Food food : foods) {
+                        if(obstacle.getPosition().epsilonEquals(food.getPosition())) {
+                            obstaclesFlag = true;
+                            continue;
+                        } else {
+                            obstaclesFlag = false;
+                        }
+                    }
+                } while(obstaclesFlag == true);
+
                 if(snake.getBodyPoints().size() < 3) {
-                    System.out.println("Game Over:\tSnake ate too much poison!");
-                    System.exit(-1);
+                    checkForNewHighScore();
+                    feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
                 }
             }
         }
@@ -200,6 +234,10 @@ public class PlayState extends State{
     }
 
     public void checkForNewHighScore() {
+        if (score < 0) {
+            score = 0;
+        }
+
         if (score > feedDaSnek.getPreferences().getInteger("highscore", 0)) {
             feedDaSnek.getPreferences().putInteger("highscore", score);
             feedDaSnek.getPreferences().flush();
