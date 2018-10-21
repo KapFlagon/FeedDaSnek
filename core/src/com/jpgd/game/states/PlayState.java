@@ -42,6 +42,7 @@ public class PlayState extends State{
         obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
 
         initializePositions();
+        assignSounds();
         dt_total = 0;
         score = 0;
 
@@ -60,6 +61,7 @@ public class PlayState extends State{
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
            // Snake has extended outside of boundaries of screen, game over
+            snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
             checkForNewHighScore();
             feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
         }
@@ -67,6 +69,7 @@ public class PlayState extends State{
         // Check if snake head touches any other part of the snakes
         for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
             if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
+                snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
                 checkForNewHighScore();
                 feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
             }
@@ -119,6 +122,7 @@ public class PlayState extends State{
                 } while(obstaclesFlag == true);
 
                 if(snake.getBodyPoints().size() < 3) {
+                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
                     checkForNewHighScore();
                     feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
                 }
@@ -187,8 +191,17 @@ public class PlayState extends State{
     }
 
     public void initializePositions() {
-        snake.initializeSnake(randomizer);
+        snake.initializeSnake();
         refreshTilePositions();
+    }
+
+    public void assignSounds() {
+        System.out.println("Death Sounds length: " + gameAssetManager.getDeathSounds().size());
+        System.out.println("Eat Sounds length: " + gameAssetManager.getEatSounds().size());
+        System.out.println("Sick Sounds length: " + gameAssetManager.getSickSounds().size());
+        snake.setDeathSounds(gameAssetManager.getDeathSounds());
+        snake.setEatSounds(gameAssetManager.getEatSounds());
+        snake.setSickSounds(gameAssetManager.getSickSounds());
     }
 
     public void refreshTilePositions() {

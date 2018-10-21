@@ -1,6 +1,7 @@
 package com.jpgd.game.objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,18 +16,21 @@ public class Snake {
     /*
     Variables
      */
+    private Random randomizer;
     private TextureRegion head_TexReg, tail_TexReg, bodyStraight_TexReg, bodyBend_TexReg;
     private int size;
     private Vector2 headPosition, tempDirectionVec;
     private Direction direction;
     private ArrayList<Vector2> bodyPoints;
     private float texWidth, texHeight, speed, dt_total, rotationVal;
+    private ArrayList<Sound> deathSounds, eatSounds, sickSounds;
 
 
     /*
     Constructors
      */
     public Snake(TextureAtlas textureAtlas) {
+        randomizer = new Random();
         // Find texture regions in provided atlas
         head_TexReg = textureAtlas.findRegion("Snake_Head");
         tail_TexReg = textureAtlas.findRegion("Snake_Tail");
@@ -55,6 +59,10 @@ public class Snake {
         return direction;
     }
 
+    public ArrayList<Sound> getDeathSounds() {
+        return deathSounds;
+    }
+
 
     /*
     Setters
@@ -63,12 +71,22 @@ public class Snake {
         this.speed = speed;
     }
 
+    public void setDeathSounds(ArrayList<Sound> deathSounds) {
+        this.deathSounds = deathSounds;
+    }
 
+    public void setEatSounds(ArrayList<Sound> eatSounds) {
+        this.eatSounds = eatSounds;
+    }
+
+    public void setSickSounds(ArrayList<Sound> sickSounds) {
+        this.sickSounds = sickSounds;
+    }
 
     /*
-    Other methods
-     */
-    public void initializeSnake(Random randomizer) {
+        Other methods
+         */
+    public void initializeSnake() {
 
         size = 3;
         // Initialize the direction as 0, changed at first key press
@@ -77,10 +95,10 @@ public class Snake {
         tempDirectionVec = new Vector2(0, 0);
         bodyPoints = new ArrayList<Vector2>();
 
-        generateStartPosition(randomizer);
+        generateStartPosition();
 
     }
-    private void generateStartPosition(Random randomizer) {
+    private void generateStartPosition() {
         float tempX, tempY;
 
         float screenX = Gdx.app.getGraphics().getWidth();
@@ -174,11 +192,14 @@ public class Snake {
     }
 
     public void grow() {
+        eatSounds.get(randomizer.nextInt(sickSounds.size())).play();
+
         // Duplicates last item and adds to end of ArrayList
         bodyPoints.add(bodyPoints.get(bodyPoints.size() - 1));
     }
 
     public void shrink() {
+        sickSounds.get(randomizer.nextInt(sickSounds.size())).play();
         bodyPoints.remove(bodyPoints.size() - 1);
     }
 

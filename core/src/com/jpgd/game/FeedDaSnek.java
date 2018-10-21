@@ -60,6 +60,7 @@ public class FeedDaSnek extends Game {
 
 
 		//this.setScreen(new PlayState(this));
+		gameAssetManager.getMusic().play();
 		this.setScreen(new StartState(this));
 	}
 
