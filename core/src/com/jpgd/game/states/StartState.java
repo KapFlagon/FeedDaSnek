@@ -36,6 +36,7 @@ public class StartState extends State {
     Other Methods
      */
     public void handleInput(float delta) {
+        // TODO Remove bug where if user presses direction key, snake begins moving immediately. Maybe use button release
         if((Gdx.input.isTouched()) || (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY))) {
             feedDaSnek.setScreen(new PlayState(feedDaSnek));
         }
@@ -58,7 +59,10 @@ public class StartState extends State {
 
     @Override
     public void resize(int width, int height) {
-
+        this.stage.getViewport().update(width, height, true);
+        orthographicCamera.viewportWidth = width;
+        orthographicCamera.viewportHeight = height;
+        orthographicCamera.update();
     }
 
     @Override

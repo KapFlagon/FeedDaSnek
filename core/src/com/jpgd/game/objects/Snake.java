@@ -205,12 +205,14 @@ public class Snake {
 
     public void render(SpriteBatch spriteBatch) {
         for(int bodyPointsIter = 0; bodyPointsIter < bodyPoints.size(); bodyPointsIter++) {
+            // TODO Determine initial rotation of textureRegions at initialization time
             if(bodyPointsIter == 0) {
                 rotationVal = determineHeadRotation();
                 spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(),head_TexReg.getRegionHeight(), 1, 1, rotationVal);
             } else if (bodyPointsIter == (bodyPoints.size()-1)) {
                 spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight());
             } else {
+                // TODO Compare previous vector with current vector, use "bend" piece and deterimine rotation for textureRegion
                 /*
                 Compare current vector to next vector
                 Select

@@ -32,14 +32,13 @@ public class EndState extends State {
      */
     public EndState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-
         button = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Up"));
 
         stage = new Stage();
         table = new Table();
         table.setFillParent(true);
         table.align(Align.center);
-        table.setDebug(true);
+        //table.setDebug(true);
 
         currentScoreTextLabel = new Label("Score: ", gameAssetManager.getLabelStyle());
         currentScoreNumLabel = new Label("", gameAssetManager.getLabelStyle());
@@ -76,18 +75,19 @@ public class EndState extends State {
 
     public void buildTable() {
         table.clearChildren();
-        table.add(gameOverLabel);
+        table.add(gameOverLabel).align(Align.left);
         table.row();
-        table.add(currentScoreTextLabel);
-        table.add(currentScoreNumLabel);
+        table.add(currentScoreTextLabel).align(Align.left);
+        table.add(currentScoreNumLabel).align(Align.left);
         table.row();
-        table.add(highScoreTextLabel);
-        table.add(highScoreNumLabel);
+        table.add(highScoreTextLabel).align(Align.left);
+        table.add(highScoreNumLabel).align(Align.left);
         table.addActor(button);
         stage.addActor(table);
 
     }
 
+    // TODO Add some sort of User input to tag name to high score
     public void handleInput(float delta) {
         if((Gdx.input.isTouched()) || (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY))) {
             feedDaSnek.setScreen(new PlayState(feedDaSnek));
@@ -112,21 +112,25 @@ public class EndState extends State {
         stage.draw();
     }
 
+    // TODO Add resize logic
     @Override
     public void resize(int width, int height) {
 
     }
 
+    // TODO Add pause logic
     @Override
     public void pause() {
 
     }
 
+    // TODO Add resume logic
     @Override
     public void resume() {
 
     }
 
+    // TODO Add hide logic
     @Override
     public void hide() {
 

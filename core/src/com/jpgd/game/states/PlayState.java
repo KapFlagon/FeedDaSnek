@@ -3,12 +3,15 @@ package com.jpgd.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector2;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
 import com.jpgd.game.objects.GameOver;
 import com.jpgd.game.objects.Obstacle;
 import com.jpgd.game.objects.Snake;
+import com.jpgd.game.objects.Tile;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,22 +33,22 @@ public class PlayState extends State{
      */
     public PlayState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
 
         foods = new ArrayList<Food>();
-        foods.add(new Food(gameAssetManager.getTextureAtlas()));
+        initializeFoods();
 
         obstacles = new ArrayList<Obstacle>();
-        obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
+        initializeObstacles();
 
         initializePositions();
+
         assignSounds();
+
         dt_total = 0;
         score = 0;
-
     }
 
 
@@ -53,10 +56,6 @@ public class PlayState extends State{
     Other methods
      */
     public void update(float delta) {
-
-        boolean foodsFlag = false;
-        boolean obstaclesFlag = false;
-
 
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
@@ -81,17 +80,7 @@ public class PlayState extends State{
                 // Shares position, snake has eaten food item
                 score = score + food.getValue();
                 snake.grow();
-                do {
-                    food.randomizePosition(randomizer);
-                    for(int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                        if (food.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
-                            foodsFlag = true;
-                            continue;
-                        } else {
-                            foodsFlag = false;
-                        }
-                    }
-                } while(foodsFlag == true);
+                generateTilePosition(food);
             }
         }
 
@@ -100,26 +89,7 @@ public class PlayState extends State{
                 // Shares position, snake has eaten food item
                 score = score + obstacle.getValue();
                 snake.shrink();
-                do {
-                    obstacle.randomizePosition(randomizer);
-
-                    for (int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                        if (obstacle.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
-                            obstaclesFlag = true;
-                            continue;
-                        } else {
-                            obstaclesFlag = false;
-                        }
-                    }
-                    for(Food food : foods) {
-                        if(obstacle.getPosition().epsilonEquals(food.getPosition())) {
-                            obstaclesFlag = true;
-                            continue;
-                        } else {
-                            obstaclesFlag = false;
-                        }
-                    }
-                } while(obstaclesFlag == true);
+                generateTilePosition(obstacle);
 
                 if(snake.getBodyPoints().size() < 3) {
                     snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
@@ -129,9 +99,11 @@ public class PlayState extends State{
             }
         }
 
+        updateFoodsAndObstacles();
     }
 
     public void processInput(float delta) {
+        // TODO Remove bug where if User is quick enough, they can direct the snake back into itself. Add check for multiple blocks in a row maybe?
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would
@@ -190,60 +162,30 @@ public class PlayState extends State{
         spriteBatch.end();
     }
 
+    public void initializeFoods() {
+        foods.clear();
+        foods.add(new Food(gameAssetManager.getTextureAtlas()));
+    }
+
+    public void initializeObstacles() {
+        obstacles.clear();
+        obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
+    }
+
     public void initializePositions() {
         snake.initializeSnake();
-        refreshTilePositions();
+        for (Food food : foods) {
+            generateTilePosition(food);
+        }
+        for (Obstacle obstacle : obstacles) {
+            generateTilePosition(obstacle);
+        }
     }
 
     public void assignSounds() {
-        System.out.println("Death Sounds length: " + gameAssetManager.getDeathSounds().size());
-        System.out.println("Eat Sounds length: " + gameAssetManager.getEatSounds().size());
-        System.out.println("Sick Sounds length: " + gameAssetManager.getSickSounds().size());
         snake.setDeathSounds(gameAssetManager.getDeathSounds());
         snake.setEatSounds(gameAssetManager.getEatSounds());
         snake.setSickSounds(gameAssetManager.getSickSounds());
-    }
-
-    public void refreshTilePositions() {
-        boolean foodsFlag = false;
-        boolean obstaclesFlag = false;
-
-        for(Food food : foods) {
-            do {
-                food.randomizePosition(randomizer);
-                for(int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                    if (food.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
-                        foodsFlag = true;
-                        continue;
-                    } else {
-                        foodsFlag = false;
-                    }
-                }
-            } while(foodsFlag == true);
-        }
-
-        for(Obstacle obstacle : obstacles) {
-            do {
-                obstacle.randomizePosition(randomizer);
-
-                for (int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
-                    if (obstacle.getPosition().epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
-                        obstaclesFlag = true;
-                        continue;
-                    } else {
-                        obstaclesFlag = false;
-                    }
-                }
-                for(Food food : foods) {
-                    if(obstacle.getPosition().epsilonEquals(food.getPosition())) {
-                        obstaclesFlag = true;
-                        continue;
-                    } else {
-                        obstaclesFlag = false;
-                    }
-                }
-            } while(obstaclesFlag == true);
-        }
     }
 
     public void checkForNewHighScore() {
@@ -257,13 +199,77 @@ public class PlayState extends State{
         }
     }
 
+    public void updateFoodsAndObstacles() {
+        float increment = (float) Math.floor(score / 100);
+        if (score != 0) {
+            // Get the nearest lower increment
+            if( ((foods.size() - 1) < increment) && ((obstacles.size() - 1) < increment) ) { // If the size of the arraylists (minus 1) is less than or equal to the increment, add a Food object
+                foods.add(new Food(gameAssetManager.getTextureAtlas()));
+                generateTilePosition(foods.get(foods.size() - 1));
+                obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
+                generateTilePosition(obstacles.get(obstacles.size() - 1));
+            } else if( ((foods.size() - 1) > increment) && ((obstacles.size() - 1) > increment) ) {  // if the size is greater than the increment then remove an entry
+                foods.remove(foods.size() - 1);
+                obstacles.remove(obstacles.size() - 1);
+            } else {
+                // Do nothing, size of the arraylist is the same as the increment
+            }
+        } else {
+            // Check if score was reduced to zero by checking size of ArrayLists, if yes, ensure ArrayLists are only size: 1
+            if ( ((foods.size() - 1) > increment) && (obstacles.size() - 1) > increment) {
+                foods.remove(foods.size() - 1);
+                obstacles.remove(obstacles.size() - 1);
+            }
+        }
+    }
+
+    private void generateTilePosition(Tile tile) {
+        Vector2 tempVec;
+        boolean duplicatePositionFlag;
+        do {
+            duplicatePositionFlag = false;
+            tempVec = randomTilePosition(tile.getWidth(), tile.getHeight());
+
+            for (Food food : foods) {
+                if (tempVec.epsilonEquals(food.getPosition())) {
+                    duplicatePositionFlag = true;
+                    break;
+                }
+            }
+
+            for (Obstacle obstacle : obstacles) {
+                if (tempVec.epsilonEquals(obstacle.getPosition())) {
+                    duplicatePositionFlag = true;
+                    break;
+                }
+            }
+
+            for (int snakeIter = 0; snakeIter < snake.getBodyPoints().size(); snakeIter++) {
+                if (tempVec.epsilonEquals(snake.getBodyPoints().get(snakeIter))) {
+                    duplicatePositionFlag = true;
+                    break;
+                }
+            }
+        } while(duplicatePositionFlag == true);
+        tile.setPosition(tempVec);
+    }
+
+    private Vector2 randomTilePosition(float width, float height) {
+        float screenX = Gdx.app.getGraphics().getWidth();
+        float screenY = Gdx.app.getGraphics().getHeight();
+
+        float tempX = randomizer.nextInt((int)(screenX / width));
+        float tempY = randomizer.nextInt((int)(screenY / height));
+
+        return new Vector2(tempX * width, tempY * height);
+    }
+
 
     /*
     Overridden methods
      */
     @Override
     public void show() {
-
     }
 
     @Override
@@ -277,21 +283,27 @@ public class PlayState extends State{
         draw(delta);
     }
 
+    // TODO Perform more research on sizing and scaling for other screens etc.
     @Override
     public void resize(int width, int height) {
-
+        orthographicCamera.viewportWidth = width;
+        orthographicCamera.viewportHeight = height;
+        orthographicCamera.update();
     }
 
+    // TODO Add pause logic
     @Override
     public void pause() {
 
     }
 
+    // TODO Add resume logic
     @Override
     public void resume() {
 
     }
 
+    // TODO Add hide screen logic
     @Override
     public void hide() {
 

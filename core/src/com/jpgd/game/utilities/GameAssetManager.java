@@ -171,7 +171,6 @@ public class GameAssetManager {
         float checkerValue;
         for(int soundsIter = 0; soundsIter < 3; soundsIter++) {
             checkerValue = random.nextFloat();
-            System.out.println("Checkervalue: " + checkerValue);
             if(checkerValue < ((1/4)*1)) {
                 deathSounds.add(assetManager.get(sfx_path_01, Sound.class));
             } else if (checkerValue >= ((1/4)*2) && checkerValue < ((1/4)*2)) {

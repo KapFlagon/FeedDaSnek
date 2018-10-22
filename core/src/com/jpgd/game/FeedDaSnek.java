@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.states.*;
 import com.jpgd.game.utilities.GameAssetManager;
 
@@ -23,6 +24,7 @@ public class FeedDaSnek extends Game {
 	private SpriteBatch spriteBatch;
 	private GameAssetManager gameAssetManager;
 	private OrthographicCamera orthographicCamera;
+	private Viewport viewport;
 	private Preferences preferences;
 
 	/*
@@ -56,11 +58,13 @@ public class FeedDaSnek extends Game {
 		gameAssetManager.done();
 		orthographicCamera = new OrthographicCamera();
 		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		orthographicCamera.update();
 		preferences = Gdx.app.getPreferences("Preferences");
 
 
 		//this.setScreen(new PlayState(this));
 		gameAssetManager.getMusic().play();
+		// TODO Consider adding some screen management so new screens are not always being created
 		this.setScreen(new StartState(this));
 	}
 
