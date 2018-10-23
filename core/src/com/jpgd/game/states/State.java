@@ -36,6 +36,9 @@ public abstract class State implements Screen {
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
+    public FeedDaSnek getFeedDaSnek() {
+        return feedDaSnek;
+    }
 
 
     /*

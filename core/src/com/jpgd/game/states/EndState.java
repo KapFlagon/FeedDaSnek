@@ -4,10 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.GameOver;
@@ -23,7 +27,7 @@ public class EndState extends State {
     private Label currentScoreTextLabel, currentScoreNumLabel;
     private Label highScoreTextLabel, highScoreNumLabel;
     private String gameOverReason;
-    private Image button;
+    private ImageButton playButton;
 
 
 
@@ -32,7 +36,21 @@ public class EndState extends State {
      */
     public EndState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-        button = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Up"));
+        playButton = new ImageButton(gameAssetManager.getSkin());
+        playButton.getStyle().imageUp = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Up"));
+        playButton.getStyle().imageDown = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Down"));
+        playButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                getFeedDaSnek().setScreen(new PlayState(getFeedDaSnek()));
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
 
         stage = new Stage();
         table = new Table();
@@ -82,8 +100,12 @@ public class EndState extends State {
         table.row();
         table.add(highScoreTextLabel).align(Align.left);
         table.add(highScoreNumLabel).align(Align.left);
-        table.addActor(button);
+
+        table.row();
+        table.add(playButton).align(Align.center).padTop(40).padLeft(40);
+
         stage.addActor(table);
+
 
     }
 
@@ -100,6 +122,7 @@ public class EndState extends State {
      */
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
 
     }
 
@@ -108,7 +131,7 @@ public class EndState extends State {
         // W3 schools "SaddleBrown" colour
         Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        handleInput(delta);
+        //handleInput(delta);
         stage.draw();
     }
 

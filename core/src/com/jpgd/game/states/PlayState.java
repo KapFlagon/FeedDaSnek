@@ -2,6 +2,8 @@ package com.jpgd.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.jpgd.game.FeedDaSnek;
@@ -100,11 +102,13 @@ public class PlayState extends State{
         }
 
         updateFoodsAndObstacles();
+        // Move the snake
+        snake.move(delta);
     }
 
-    public void processInput(float delta) {
+    public void processInput(int keycode) {
         // TODO Remove bug where if User is quick enough, they can direct the snake back into itself. Add check for multiple blocks in a row maybe?
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if(keycode == Input.Keys.LEFT) {
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself
@@ -114,7 +118,7 @@ public class PlayState extends State{
             }
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if(keycode == Input.Keys.RIGHT) {
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself
@@ -124,7 +128,7 @@ public class PlayState extends State{
             }
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if(keycode == Input.Keys.UP) {
             if(snake.getDirection().getVector().y != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself
@@ -134,7 +138,7 @@ public class PlayState extends State{
             }
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if(keycode == Input.Keys.DOWN) {
             if(snake.getDirection().getVector().y != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself
@@ -143,7 +147,6 @@ public class PlayState extends State{
                 snake.changeDirection(Direction.DOWN);
             }
         }
-        snake.move(delta);
     }
 
     public void draw(float delta) {
@@ -270,6 +273,13 @@ public class PlayState extends State{
      */
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(new InputAdapter(){
+            @Override
+            public boolean keyDown (int keycode) {
+                processInput(keycode);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -278,7 +288,7 @@ public class PlayState extends State{
         // W3 schools "SaddleBrown" colour
         Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        processInput(delta);
+        //processInput(delta);
         update(delta);
         draw(delta);
     }

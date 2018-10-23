@@ -64,6 +64,8 @@ public class GameAssetManager {
 
         musicPath = "music/FeedDaSnek_Theme.mp3";
 
+        skin01Path = "skins/shade/uiskin.json";
+
         deathSounds = new ArrayList<Sound>();
         eatSounds = new ArrayList<Sound>();
         sickSounds = new ArrayList<Sound>();
@@ -73,6 +75,7 @@ public class GameAssetManager {
         loadFonts();
         loadSFX();
         loadMusic();
+        loadSkin();
 
     }
 
@@ -106,6 +109,10 @@ public class GameAssetManager {
 
     public Music getMusic() {
         return music;
+    }
+
+    public Skin getSkin() {
+        return skin;
     }
 
     /*
@@ -146,7 +153,7 @@ public class GameAssetManager {
     }
 
     public void loadSkin() {
-
+        assetManager.load(skin01Path, Skin.class);
     }
 
 
@@ -241,16 +248,44 @@ public class GameAssetManager {
 
     }
 
+    private void checkAndAssignSkin(){
+        if(assetManager.isLoaded(skin01Path)){
+            assetManager.getLogger().info("Skin loaded");
+            skin = assetManager.get(skin01Path, Skin.class);
+        } else {
+            assetManager.getLogger().info("Skin not loaded");
+        }
+    }
+
     public void done() {
         assetManager.finishLoading();
 
         checkAndAssignTextureAtlas();
         checkAndAssignSounds();
         checkMusic();
+        checkAndAssignSkin();
     }
 
     public void dispose() {
         assetManager.unload(textureAtlasPath);
+        assetManager.unload(sfx_path_01);
+        assetManager.unload(sfx_path_02);
+        assetManager.unload(sfx_path_03);
+        assetManager.unload(sfx_path_04);
+        assetManager.unload(sfx_path_05);
+        assetManager.unload(sfx_path_06);
+        assetManager.unload(sfx_path_07);
+        assetManager.unload(sfx_path_08);
+        assetManager.unload(sfx_path_09);
+        assetManager.unload(sfx_path_10);
+        assetManager.unload(sfx_path_11);
+        assetManager.unload(sfx_path_12);
+        assetManager.unload(sfx_path_13);
+        assetManager.unload(sfx_path_14);
+        assetManager.unload(sfx_path_15);
+        assetManager.unload(sfx_path_16);
+        assetManager.unload(musicPath);
+        assetManager.unload(skin01Path);
     }
 
 }
