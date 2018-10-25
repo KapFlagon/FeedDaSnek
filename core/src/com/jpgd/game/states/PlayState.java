@@ -38,6 +38,7 @@ public class PlayState extends State{
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
+        snake.setSpeed(0.2f);
 
         foods = new ArrayList<Food>();
         initializeFoods();
@@ -108,6 +109,7 @@ public class PlayState extends State{
 
     public void processInput(int keycode) {
         // TODO Remove bug where if User is quick enough, they can direct the snake back into itself. Add check for multiple blocks in a row maybe?
+        // TODO Remove bug where snake start position can result in game over if snake head is allowed to initially go in the direction of it's body
         if(keycode == Input.Keys.LEFT) {
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would

@@ -152,7 +152,8 @@ public class Snake {
 
     public void move(float delta) {
         dt_total = dt_total + delta;
-        if (dt_total > 0.08f) {
+        //if (dt_total > 0.08f) {
+        if (dt_total > speed) {
             tempDirectionVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * 16)), (bodyPoints.get(0).y + (direction.getVector().y * 16)));
 
             if (tempDirectionVec.epsilonEquals(bodyPoints.get(0))) {
@@ -187,6 +188,29 @@ public class Snake {
         return rotation;
     }
 
+    public float determineRotation(int bodyPointIter) {
+        float rotation = 0;
+        // Compare previous piece (bodyPointIter - 1) and current piece (bodyPointIter)
+        // Compare their x and y positions
+
+        if ((bodyPoints.get(bodyPointIter - 1).x) > (bodyPoints.get(bodyPointIter).x)) {
+            // leading bodypoint is to the right of current bodypoint
+            rotation = 270;
+        } else if (((bodyPoints.get(bodyPointIter - 1).x) < (bodyPoints.get(bodyPointIter).x))) {
+            // leading bodypoint is to the left of current bodypoint
+            rotation = 90;
+        }
+
+        if ((bodyPoints.get(bodyPointIter - 1).y) > (bodyPoints.get(bodyPointIter).y)) {
+            // leading bodypoint is above current bodypoint
+            rotation = 0;
+        } else if (((bodyPoints.get(bodyPointIter - 1).y) < (bodyPoints.get(bodyPointIter).y))) {
+            // leading bodypoint is below current bodypoint
+            rotation = 180;
+        }
+        return rotation;
+    }
+
     public void changeDirection(Direction direction) {
         this.direction = direction;
     }
@@ -208,17 +232,29 @@ public class Snake {
             // TODO Determine initial rotation of textureRegions at initialization time
             if(bodyPointsIter == 0) {
                 rotationVal = determineHeadRotation();
-                spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(),head_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(), head_TexReg.getRegionHeight(), 1, 1, rotationVal);
             } else if (bodyPointsIter == (bodyPoints.size()-1)) {
-                spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight());
+                rotationVal = determineRotation(bodyPoints.size()-1);
+                spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (tail_TexReg.getRegionWidth() / 2), (tail_TexReg.getRegionHeight() / 2), tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight(), 1, 1, rotationVal);
             } else {
                 // TODO Compare previous vector with current vector, use "bend" piece and deterimine rotation for textureRegion
                 /*
                 Compare current vector to next vector
                 Select
                  */
+                rotationVal = determineRotation(bodyPointsIter);
 
-                spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight());
+                if(
+                    // If last body point x is same as current body point, and next body point x is same as current body point use straight piece. OR, same checks for y positions.
+                    ( (bodyPoints.get(bodyPointsIter-1).x) == (bodyPoints.get(bodyPointsIter).x) && (bodyPoints.get(bodyPointsIter+1).x) == (bodyPoints.get(bodyPointsIter).x) )
+                    || ( (bodyPoints.get(bodyPointsIter-1).y) == (bodyPoints.get(bodyPointsIter).y) && (bodyPoints.get(bodyPointsIter+1).y) == (bodyPoints.get(bodyPointsIter).y) )
+                        ) {
+                    spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyStraight_TexReg.getRegionWidth()/2), (bodyStraight_TexReg.getRegionHeight()/2), bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                } else {
+                    // TODO May need separate function for bend piece rotation
+                    // Every other scenario, use bend piece
+                    spriteBatch.draw(bodyBend_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyBend_TexReg.getRegionWidth()/2), (bodyBend_TexReg.getRegionHeight()/2), bodyBend_TexReg.getRegionWidth(), bodyBend_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                }
             }
             rotationVal = 0;
         }
