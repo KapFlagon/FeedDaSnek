@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -18,8 +19,8 @@ public class StartState extends State {
 
     private Stage stage;
     private Table table;
-    Image background;
-    private ImageButton playButton;
+    private Image background;
+    private TextButton playButton, optionsButton, highScoreButton;
 
     /*
     Constructors
@@ -32,9 +33,7 @@ public class StartState extends State {
         table.align(Align.center);
         background = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("Start_BG"));
 
-        playButton = new ImageButton(gameAssetManager.getSkin());
-        playButton.getStyle().imageUp = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Up"));
-        playButton.getStyle().imageDown = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Down"));
+        playButton = new TextButton("Play", gameAssetManager.getSkin());
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -47,7 +46,39 @@ public class StartState extends State {
             }
         });
 
+        optionsButton = new TextButton("Options", gameAssetManager.getSkin());
+        optionsButton.addListener(new InputListener() {
+            // TODO Update Options button logic
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        highScoreButton = new TextButton("High Scores", gameAssetManager.getSkin());
+        highScoreButton.addListener(new InputListener() {
+            // TODO Update High Score button logic
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         table.add(playButton);
+        table. row();
+        table.add(optionsButton);
+        table.row();
+        table.add(highScoreButton);
 
         stage.addActor(background);
         stage.addActor(table);

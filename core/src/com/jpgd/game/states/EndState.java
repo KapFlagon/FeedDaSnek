@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.jpgd.game.FeedDaSnek;
@@ -27,8 +28,7 @@ public class EndState extends State {
     private Label currentScoreTextLabel, currentScoreNumLabel;
     private Label highScoreTextLabel, highScoreNumLabel;
     private String gameOverReason;
-    private ImageButton playButton;
-
+    private TextButton playButton, highScoreButton;
 
 
     /*
@@ -36,13 +36,25 @@ public class EndState extends State {
      */
     public EndState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-        playButton = new ImageButton(gameAssetManager.getSkin());
-        playButton.getStyle().imageUp = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Up"));
-        playButton.getStyle().imageDown = new TextureRegionDrawable(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("PlayButton_Down"));
+        playButton = new TextButton("Play again", gameAssetManager.getSkin());
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 getFeedDaSnek().setScreen(new PlayState(getFeedDaSnek()));
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        highScoreButton = new TextButton("High Scores", gameAssetManager.getSkin());
+        highScoreButton.addListener(new InputListener() {
+            // TODO Update High Score button logic
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
             }
 
             @Override
@@ -102,7 +114,9 @@ public class EndState extends State {
         table.add(highScoreNumLabel).align(Align.left);
 
         table.row();
-        table.add(playButton).align(Align.center).padTop(40).padLeft(40);
+        table.add(playButton).align(Align.center);
+        table.row();
+        table.add(highScoreButton).align(Align.center);
 
         stage.addActor(table);
 
