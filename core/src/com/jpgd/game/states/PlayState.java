@@ -6,6 +6,11 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
@@ -22,12 +27,16 @@ public class PlayState extends State{
     /*
     Variables
      */
+    private Stage stage;
     private float dt_total;
     private Random randomizer;
     private Snake snake;
     private ArrayList<Food> foods;
     private ArrayList<Obstacle> obstacles;
     private int score;
+    private Dialog dialog;
+    private boolean snakeCanMove;
+    private TextButton playAgainButton, menuButton;
 
 
     /*
@@ -35,6 +44,8 @@ public class PlayState extends State{
      */
     public PlayState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
+
+        stage = new Stage();
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
@@ -49,9 +60,56 @@ public class PlayState extends State{
         initializePositions();
 
         assignSounds();
+        dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin());
 
         dt_total = 0;
         score = 0;
+        snakeCanMove = true;
+
+        playAgainButton = new TextButton("Play Again", feedDaSnek.getGameAssetManager().getSkin());
+        playAgainButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                //dialog.hide();
+                score = 0;
+                initializeFoods();
+                initializeObstacles();
+                initializePositions();
+                snakeCanMove = true;
+
+                // TODO figure out how to clear the dialog box correctly
+                dialog.getContentTable().clear();
+                dialog.getContentTable().layout();
+                dialog.getContentTable().invalidate();
+                dialog.getContentTable().invalidateHierarchy();
+
+                Gdx.input.setInputProcessor(new InputAdapter(){
+                    @Override
+                    public boolean keyDown (int keycode) {
+                        processInput(keycode);
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        menuButton = new TextButton("Menu", feedDaSnek.getGameAssetManager().getSkin());
+        menuButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                // Go to main menu
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
     }
 
 
@@ -62,18 +120,26 @@ public class PlayState extends State{
 
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
-           // Snake has extended outside of boundaries of screen, game over
-            snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-            checkForNewHighScore();
-            feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
+            // Snake has extended outside of boundaries of screen, game over
+            if(snakeCanMove == true) {
+                snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
+                checkForNewHighScore();
+                //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
+                snakeCanMove = false;
+                updateEndGameDialog(GameOver.GO_1);
+            }
         }
 
         // Check if snake head touches any other part of the snakes
         for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
             if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
-                snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-                checkForNewHighScore();
-                feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
+                if(snakeCanMove == true) {
+                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
+                    checkForNewHighScore();
+                    //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
+                    snakeCanMove = false;
+                    updateEndGameDialog(GameOver.GO_2);
+                }
             }
         }
 
@@ -95,16 +161,22 @@ public class PlayState extends State{
                 generateTilePosition(obstacle);
 
                 if(snake.getBodyPoints().size() < 3) {
-                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-                    checkForNewHighScore();
-                    feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
+                    if(snakeCanMove == true) {
+                        snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
+                        checkForNewHighScore();
+                        //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
+                        snakeCanMove = false;
+                        updateEndGameDialog(GameOver.GO_3);
+                    }
                 }
             }
         }
 
         updateFoodsAndObstacles();
         // Move the snake
-        snake.move(delta);
+        if(snakeCanMove == true) {
+            snake.move(delta);
+        }
     }
 
     public void processInput(int keycode) {
@@ -269,6 +341,17 @@ public class PlayState extends State{
         return new Vector2(tempX * width, tempY * height);
     }
 
+    private void updateEndGameDialog(GameOver gameOver) {
+        Gdx.input.setInputProcessor(stage);
+        dialog.text(gameOver.getReason());
+        dialog.getContentTable().row();
+        dialog.text("Score: " + score);
+        dialog.getContentTable().row();
+        dialog.button(playAgainButton);
+        dialog.button(menuButton);
+        dialog.show(stage);
+    }
+
 
     /*
     Overridden methods
@@ -293,6 +376,8 @@ public class PlayState extends State{
         //processInput(delta);
         update(delta);
         draw(delta);
+        stage.act();
+        stage.draw();
     }
 
     // TODO Perform more research on sizing and scaling for other screens etc.
