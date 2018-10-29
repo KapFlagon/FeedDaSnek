@@ -36,7 +36,7 @@ public class PlayState extends State{
     private int score;
     private Dialog dialog;
     private boolean snakeCanMove;
-    private TextButton playAgainButton, menuButton;
+    private String playerName;
 
 
     /*
@@ -52,64 +52,16 @@ public class PlayState extends State{
         snake.setSpeed(0.2f);
 
         foods = new ArrayList<Food>();
-        initializeFoods();
 
         obstacles = new ArrayList<Obstacle>();
-        initializeObstacles();
 
-        initializePositions();
 
         assignSounds();
-        dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin());
 
         dt_total = 0;
-        score = 0;
-        snakeCanMove = true;
 
-        playAgainButton = new TextButton("Play Again", feedDaSnek.getGameAssetManager().getSkin());
-        playAgainButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                //dialog.hide();
-                score = 0;
-                initializeFoods();
-                initializeObstacles();
-                initializePositions();
-                snakeCanMove = true;
-
-                // TODO figure out how to clear the dialog box correctly
-                dialog.getContentTable().clear();
-                dialog.getContentTable().layout();
-                dialog.getContentTable().invalidate();
-                dialog.getContentTable().invalidateHierarchy();
-
-                Gdx.input.setInputProcessor(new InputAdapter(){
-                    @Override
-                    public boolean keyDown (int keycode) {
-                        processInput(keycode);
-                        return true;
-                    }
-                });
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-        });
-
-        menuButton = new TextButton("Menu", feedDaSnek.getGameAssetManager().getSkin());
-        menuButton.addListener(new InputListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Go to main menu
-            }
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-        });
+        resetGame();
+        // TODO Add logic to pull player name data from preferences
     }
 
 
@@ -341,14 +293,41 @@ public class PlayState extends State{
         return new Vector2(tempX * width, tempY * height);
     }
 
+    public void resetGame() {
+        score = 0;
+        initializeFoods();
+        initializeObstacles();
+        initializePositions();
+        snakeCanMove = true;
+    }
+
     private void updateEndGameDialog(GameOver gameOver) {
+        // TODO Add input for player name
+        // TODO Check if score is better than all entries on the high score table and replace it
         Gdx.input.setInputProcessor(stage);
+        dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin()){
+            protected void result (Object object) {
+                if(object.equals(1L)) {
+                    resetGame();
+                    Gdx.input.setInputProcessor(new InputAdapter(){
+                        @Override
+                        public boolean keyDown (int keycode) {
+                            processInput(keycode);
+                            return true;
+                        }
+                    });
+                } else {
+                    // Redirect to main menu
+                    feedDaSnek.setScreen(new StartState(feedDaSnek));
+                }
+            }
+        };
         dialog.text(gameOver.getReason());
         dialog.getContentTable().row();
         dialog.text("Score: " + score);
         dialog.getContentTable().row();
-        dialog.button(playAgainButton);
-        dialog.button(menuButton);
+        dialog.button("Play Again", 1L);
+        dialog.button("Main Menu", 2L);
         dialog.show(stage);
     }
 

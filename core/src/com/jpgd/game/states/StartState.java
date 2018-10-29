@@ -51,7 +51,7 @@ public class StartState extends State {
             // TODO Update Options button logic
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
+                getFeedDaSnek().setScreen(new OptionsState(getFeedDaSnek()));
             }
 
             @Override
@@ -65,7 +65,7 @@ public class StartState extends State {
             // TODO Update High Score button logic
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
+                getFeedDaSnek().setScreen(new HighScoresState(getFeedDaSnek()));
             }
 
             @Override
@@ -75,7 +75,7 @@ public class StartState extends State {
         });
 
         table.add(playButton);
-        table. row();
+        table.row();
         table.add(optionsButton);
         table.row();
         table.add(highScoreButton);
