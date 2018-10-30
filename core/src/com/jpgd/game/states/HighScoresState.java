@@ -8,11 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.jpgd.game.FeedDaSnek;
 
-public class HighScoresState extends State implements Json.Serializable {
+public class HighScoresState extends State {
 
     private Stage stage;
     private Window window;
@@ -51,16 +49,6 @@ public class HighScoresState extends State implements Json.Serializable {
         window.add(backButton);
 
         stage.addActor(window);
-    }
-
-    @Override
-    public void write(Json json) {
-
-    }
-
-    @Override
-    public void read(Json json, JsonValue jsonData) {
-
     }
 
     @Override

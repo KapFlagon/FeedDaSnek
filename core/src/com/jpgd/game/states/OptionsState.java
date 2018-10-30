@@ -39,6 +39,13 @@ public class OptionsState extends State {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 // TODO add logic to submit changes and save them
+
+                getFeedDaSnek().getPreferences().putBoolean("musicOn", checkBoxMusic.isChecked());
+                getFeedDaSnek().getPreferences().putBoolean("sfxOn", checkBoxSfx.isChecked());
+                getFeedDaSnek().getPreferences().putFloat("musicVolume", (sliderMusic.getValue() / 100));
+                getFeedDaSnek().getPreferences().putFloat("sfxVolume", (sliderSfx.getValue() / 100));
+                getFeedDaSnek().getPreferences().flush();
+                getFeedDaSnek().updateAudio();
                 getFeedDaSnek().setScreen(new StartState(getFeedDaSnek()));
             }
 
@@ -62,13 +69,17 @@ public class OptionsState extends State {
         });
 
         checkBoxMusic = new CheckBox("Music On/Off", feedDaSnek.getGameAssetManager().getSkin());
+        checkBoxMusic.setChecked(feedDaSnek.getPreferences().getBoolean("musicOn", true));
         checkBoxSfx = new CheckBox("SFX On/Off", feedDaSnek.getGameAssetManager().getSkin());
+        checkBoxSfx.setChecked(feedDaSnek.getPreferences().getBoolean("sfxOn", true));
 
         label_volumeMusic = new Label("Music volume:", gameAssetManager.getLabelStyle());
         label_volumeSfx = new Label("SFX volume:", gameAssetManager.getLabelStyle());
 
         sliderMusic = new Slider(0, 100, 1, false, feedDaSnek.getGameAssetManager().getSkin());
+        sliderMusic.setValue(feedDaSnek.getPreferences().getFloat("musicVolume", 1f) * 100);
         sliderSfx = new Slider(0, 100, 1, false, feedDaSnek.getGameAssetManager().getSkin());
+        sliderSfx.setValue(feedDaSnek.getPreferences().getFloat("sfxVolume",1f) * 100);
     }
 
     /*

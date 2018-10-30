@@ -26,6 +26,8 @@ public class FeedDaSnek extends Game {
 	private OrthographicCamera orthographicCamera;
 	private Viewport viewport;
 	private Preferences preferences;
+	private boolean musicOn, sfxOn;
+	private float musicVolume, sfxVolume;
 
 	/*
 	Getters
@@ -46,6 +48,39 @@ public class FeedDaSnek extends Game {
 		return preferences;
 	}
 
+	public boolean isMusicOn() {
+		return musicOn;
+	}
+
+	public boolean isSfxOn() {
+		return sfxOn;
+	}
+
+	public float getMusicVolume() {
+		return musicVolume;
+	}
+
+	public float getSfxVolume() {
+		return sfxVolume;
+	}
+
+	/*
+    Other Methods
+    */
+	public void updateAudio() {
+		musicOn = this.getPreferences().getBoolean("musicOn", true);
+		sfxOn = this.getPreferences().getBoolean("sfxOn", true);
+		musicVolume = this.getPreferences().getFloat("musicVolume", 1f);
+		sfxVolume = this.getPreferences().getFloat("sfxVolume", 1f);
+
+		gameAssetManager.getMusic().setVolume(musicVolume);
+		if (musicOn == true) {
+			gameAssetManager.getMusic().play();
+		} else {
+			gameAssetManager.getMusic().stop();
+		}
+	}
+
 	/*
     Overridden methods from "Game" class
     */
@@ -63,7 +98,8 @@ public class FeedDaSnek extends Game {
 
 
 		//this.setScreen(new PlayState(this));
-		gameAssetManager.getMusic().play();
+		updateAudio();
+
 		// TODO Consider adding some screen management so new screens are not always being created
 		this.setScreen(new StartState(this));
 	}

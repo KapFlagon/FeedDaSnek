@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
@@ -37,6 +38,7 @@ public class PlayState extends State{
     private Dialog dialog;
     private boolean snakeCanMove;
     private String playerName;
+    private TextField playerNameField;
 
 
     /*
@@ -49,18 +51,19 @@ public class PlayState extends State{
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
-        snake.setSpeed(0.2f);
+        snake.setSpeed(0.09f);
 
         foods = new ArrayList<Food>();
-
         obstacles = new ArrayList<Obstacle>();
-
 
         assignSounds();
 
         dt_total = 0;
 
         resetGame();
+        playerNameField = new TextField("", feedDaSnek.getGameAssetManager().getSkin());
+        playerNameField.setMaxLength(10);
+
         // TODO Add logic to pull player name data from preferences
     }
 
@@ -74,11 +77,12 @@ public class PlayState extends State{
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
             // Snake has extended outside of boundaries of screen, game over
             if(snakeCanMove == true) {
-                snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-                checkForNewHighScore();
+                if (feedDaSnek.isSfxOn() == true) {
+                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
+                }
                 //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
                 snakeCanMove = false;
-                updateEndGameDialog(GameOver.GO_1);
+                updateEndGameDialog(GameOver.GO_1, checkForNewHighScore());
             }
         }
 
@@ -86,11 +90,12 @@ public class PlayState extends State{
         for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
             if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
                 if(snakeCanMove == true) {
-                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-                    checkForNewHighScore();
+                    if (feedDaSnek.isSfxOn() == true) {
+                        snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
+                    }
                     //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
                     snakeCanMove = false;
-                    updateEndGameDialog(GameOver.GO_2);
+                    updateEndGameDialog(GameOver.GO_2, checkForNewHighScore());
                 }
             }
         }
@@ -100,7 +105,7 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(food.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + food.getValue();
-                snake.grow();
+                snake.grow(feedDaSnek);
                 generateTilePosition(food);
             }
         }
@@ -109,16 +114,17 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(obstacle.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + obstacle.getValue();
-                snake.shrink();
+                snake.shrink(feedDaSnek);
                 generateTilePosition(obstacle);
 
                 if(snake.getBodyPoints().size() < 3) {
                     if(snakeCanMove == true) {
-                        snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play();
-                        checkForNewHighScore();
+                        if (feedDaSnek.isSfxOn() == true) {
+                            snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
+                        }
                         //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
                         snakeCanMove = false;
-                        updateEndGameDialog(GameOver.GO_3);
+                        updateEndGameDialog(GameOver.GO_3, checkForNewHighScore());
                     }
                 }
             }
@@ -217,7 +223,7 @@ public class PlayState extends State{
         snake.setSickSounds(gameAssetManager.getSickSounds());
     }
 
-    public void checkForNewHighScore() {
+    public boolean checkForNewHighScore() {
         if (score < 0) {
             score = 0;
         }
@@ -225,6 +231,9 @@ public class PlayState extends State{
         if (score > feedDaSnek.getPreferences().getInteger("highscore", 0)) {
             feedDaSnek.getPreferences().putInteger("highscore", score);
             feedDaSnek.getPreferences().flush();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -301,12 +310,13 @@ public class PlayState extends State{
         snakeCanMove = true;
     }
 
-    private void updateEndGameDialog(GameOver gameOver) {
+    private void updateEndGameDialog(GameOver gameOver, boolean newHighScore) {
         // TODO Add input for player name
         // TODO Check if score is better than all entries on the high score table and replace it
         Gdx.input.setInputProcessor(stage);
         dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin()){
             protected void result (Object object) {
+                // TODO add logic to commit user input
                 if(object.equals(1L)) {
                     resetGame();
                     Gdx.input.setInputProcessor(new InputAdapter(){
@@ -324,8 +334,16 @@ public class PlayState extends State{
         };
         dialog.text(gameOver.getReason());
         dialog.getContentTable().row();
+        if (newHighScore == true) {
+            dialog.text("New High Score!");
+            dialog.getContentTable().row();
+        }
         dialog.text("Score: " + score);
         dialog.getContentTable().row();
+        if (newHighScore == true) {
+            dialog.add(playerNameField);
+            dialog.getContentTable().row();
+        }
         dialog.button("Play Again", 1L);
         dialog.button("Main Menu", 2L);
         dialog.show(stage);

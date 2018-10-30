@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.jpgd.game.FeedDaSnek;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -215,15 +217,18 @@ public class Snake {
         this.direction = direction;
     }
 
-    public void grow() {
-        eatSounds.get(randomizer.nextInt(sickSounds.size())).play();
-
+    public void grow(FeedDaSnek feedDaSnek) {
+        if (feedDaSnek.isSfxOn() == true) {
+            eatSounds.get(randomizer.nextInt(sickSounds.size())).play(feedDaSnek.getSfxVolume());
+        }
         // Duplicates last item and adds to end of ArrayList
         bodyPoints.add(bodyPoints.get(bodyPoints.size() - 1));
     }
 
-    public void shrink() {
-        sickSounds.get(randomizer.nextInt(sickSounds.size())).play();
+    public void shrink(FeedDaSnek feedDaSnek) {
+        if (feedDaSnek.isSfxOn() == true) {
+            sickSounds.get(randomizer.nextInt(sickSounds.size())).play(feedDaSnek.getSfxVolume());
+        }
         bodyPoints.remove(bodyPoints.size() - 1);
     }
 
