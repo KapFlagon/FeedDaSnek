@@ -51,7 +51,7 @@ public class PlayState extends State{
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
-        snake.setSpeed(0.09f);
+        snake.setSpeed(0.4f);
 
         foods = new ArrayList<Food>();
         obstacles = new ArrayList<Obstacle>();
@@ -74,6 +74,7 @@ public class PlayState extends State{
     public void update(float delta) {
 
         // Check if snake head moves out of bounds
+        // TODO There is a but where if snake moves outside right or upper boundaries, it does not detect at correct time. Detection occurs at body points other than the head. Examine this further.
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
             // Snake has extended outside of boundaries of screen, game over
             if(snakeCanMove == true) {
@@ -140,13 +141,26 @@ public class PlayState extends State{
     public void processInput(int keycode) {
         // TODO Remove bug where if User is quick enough, they can direct the snake back into itself. Add check for multiple blocks in a row maybe?
         // TODO Remove bug where snake start position can result in game over if snake head is allowed to initially go in the direction of it's body
+
+        float tempHeadX = snake.getBodyPoints().get(0).x;
+        float tempHeadY = snake.getBodyPoints().get(0).y;
+        float tempBodyX = snake.getBodyPoints().get(1).x;
+        float tempBodyY = snake.getBodyPoints().get(1).y;
+        float tempWidth = snake.getTexWidth();
+        float tempHeight = snake.getTexHeight();
+
         if(keycode == Input.Keys.LEFT) {
+            System.out.println("Left");
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself
                 // b) simply go in same direction
             } else {
-                snake.changeDirection(Direction.LEFT);
+                if ((tempHeadX - tempWidth) == tempBodyX) {
+                    // Do nothing, no change in direction
+                } else {
+                    snake.changeDirection(Direction.LEFT);
+                }
             }
         }
 
@@ -156,7 +170,11 @@ public class PlayState extends State{
                 // a) cause the snake to go back on itself
                 // b) simply go in same direction
             } else {
-                snake.changeDirection(Direction.RIGHT);
+                if ((tempHeadX + tempWidth) == tempBodyX) {
+                    // Do nothing, no change in direction
+                } else {
+                    snake.changeDirection(Direction.RIGHT);
+                }
             }
         }
 
@@ -166,7 +184,11 @@ public class PlayState extends State{
                 // a) cause the snake to go back on itself
                 // b) simply go in same direction
             } else {
-                snake.changeDirection(Direction.UP);
+                if ((tempHeadY + tempHeight) == tempBodyY) {
+                    // Do nothing, no change in direction
+                } else {
+                    snake.changeDirection(Direction.UP);
+                }
             }
         }
 
@@ -176,7 +198,11 @@ public class PlayState extends State{
                 // a) cause the snake to go back on itself
                 // b) simply go in same direction
             } else {
-                snake.changeDirection(Direction.DOWN);
+                if ((tempHeadY - tempHeight) == tempBodyY) {
+                    // Do nothing, no change in direction
+                } else {
+                    snake.changeDirection(Direction.DOWN);
+                }
             }
         }
     }
@@ -342,6 +368,7 @@ public class PlayState extends State{
         dialog.getContentTable().row();
         if (newHighScore == true) {
             dialog.add(playerNameField);
+            dialog.getContentTable().row();
             dialog.getContentTable().row();
         }
         dialog.button("Play Again", 1L);

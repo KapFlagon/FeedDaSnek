@@ -65,6 +65,14 @@ public class Snake {
         return deathSounds;
     }
 
+    public float getTexWidth() {
+        return texWidth;
+    }
+
+    public float getTexHeight() {
+        return texHeight;
+    }
+
 
     /*
     Setters
