@@ -51,7 +51,7 @@ public class PlayState extends State{
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
-        snake.setSpeed(0.4f);
+        snake.setSpeed(0.085f);
 
         foods = new ArrayList<Food>();
         obstacles = new ArrayList<Obstacle>();
@@ -74,8 +74,7 @@ public class PlayState extends State{
     public void update(float delta) {
 
         // Check if snake head moves out of bounds
-        // TODO There is a but where if snake moves outside right or upper boundaries, it does not detect at correct time. Detection occurs at body points other than the head. Examine this further.
-        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x > Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y > Gdx.app.getGraphics().getHeight()) {
+        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= Gdx.app.getGraphics().getHeight()) {
             // Snake has extended outside of boundaries of screen, game over
             if(snakeCanMove == true) {
                 if (feedDaSnek.isSfxOn() == true) {

@@ -44,9 +44,12 @@ public class HighScoresState extends State {
     Other methods
      */
     public void buildWindow() {
-        window.add("High Scores");
         window.row();
         window.add(backButton);
+
+        // Packs the window to the size of the child elements
+        window.pack();
+        window.setPosition((Gdx.graphics.getWidth() - window.getWidth()) / 2 , (Gdx.graphics.getHeight() - window.getHeight()) / 2);
 
         stage.addActor(window);
     }

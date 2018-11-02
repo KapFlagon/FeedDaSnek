@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import com.jpgd.game.FeedDaSnek;
 
 public class OptionsState extends State {
 
     Stage stage;
-    Table table;
+    Window window;
     TextButton submitButton, backButton;
     Label label_volumeSfx, label_volumeMusic;
     CheckBox checkBoxMusic, checkBoxSfx;
@@ -29,10 +30,11 @@ public class OptionsState extends State {
         super(feedDaSnek);
 
         stage = new Stage();
-        table = new Table();
-        table.setFillParent(true);
-        table.align(Align.center);
-        table.setSkin(feedDaSnek.getGameAssetManager().getSkin());
+
+        window = new Window("Options", feedDaSnek.getGameAssetManager().getSkin());
+        window.setSkin(feedDaSnek.getGameAssetManager().getSkin());
+        //window.setFillParent(true);
+        window.align(Align.center);
 
         submitButton = new TextButton("Submit", gameAssetManager.getSkin());
         submitButton.addListener(new InputListener() {
@@ -86,21 +88,24 @@ public class OptionsState extends State {
     Other Methods
      */
     public void buildTable() {
-        table.add("Options");
-        table.row();
-        table.add(checkBoxMusic);
-        table.add(checkBoxSfx);
-        table.row();
-        table.add(label_volumeMusic);
-        table.add(sliderMusic);
-        table.row();
-        table.add(label_volumeSfx);
-        table.add(sliderSfx);
-        table.row();
-        table.add(submitButton);
-        table.add(backButton);
+        window.layout();
+        window.add(checkBoxMusic).pad(5);
+        window.add(checkBoxSfx).pad(5);
+        window.row();
+        window.add(label_volumeMusic).pad(5);
+        window.add(sliderMusic).pad(5);
+        window.row();
+        window.add(label_volumeSfx).pad(5);
+        window.add(sliderSfx).pad(5);
+        window.row();
+        window.add(submitButton).pad(5);
+        window.add(backButton).pad(5);
 
-        stage.addActor(table);
+        // Packs the window to the size of the child elements
+        window.pack();
+        window.setPosition((Gdx.graphics.getWidth() - window.getWidth()) / 2 , (Gdx.graphics.getHeight() - window.getHeight()) / 2);
+
+        stage.addActor(window);
     }
 
     /*
