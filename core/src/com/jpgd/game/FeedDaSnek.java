@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.states.*;
 import com.jpgd.game.utilities.GameAssetManager;
+import com.jpgd.game.utilities.ScoreManager;
 
 public class FeedDaSnek extends Game {
 
@@ -23,6 +24,7 @@ public class FeedDaSnek extends Game {
 	 */
 	private SpriteBatch spriteBatch;
 	private GameAssetManager gameAssetManager;
+	private ScoreManager scoreManager;
 	private OrthographicCamera orthographicCamera;
 	private Viewport viewport;
 	private Preferences preferences;

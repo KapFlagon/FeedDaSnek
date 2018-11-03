@@ -149,7 +149,6 @@ public class PlayState extends State{
         float tempHeight = snake.getTexHeight();
 
         if(keycode == Input.Keys.LEFT) {
-            System.out.println("Left");
             if(snake.getDirection().getVector().x != 0) {
                 // no direction change as it would
                 // a) cause the snake to go back on itself

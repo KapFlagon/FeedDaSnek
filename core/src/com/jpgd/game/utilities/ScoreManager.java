@@ -4,12 +4,16 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ScoreManager implements Json.Serializable {
-
     // TODO make this class the central point for reading/writing the high score data
+    HighScores highScores;
+    Json json;
 
     public ScoreManager() {
+        highScores = new HighScores();
+        json = new Json();
 
     }
 
@@ -27,11 +31,10 @@ public class ScoreManager implements Json.Serializable {
     }
 
     // Inner class
-    private class Score {
+    private class Score implements Comparable<Score>{
         /*
         Variables
          */
-        private String position;
         private int score;
         private String name;
 
@@ -39,17 +42,14 @@ public class ScoreManager implements Json.Serializable {
         Constructors
          */
         public Score() {
-            position = "";
             score = 0;
             name = "NONAME";
         }
         public Score(Score scoreObject) {
-            this.position = scoreObject.getPosition();
             this.score = scoreObject.getScore();
             this.name = scoreObject.getName();
         }
-        public Score(String position, int score, String name) {
-            this.position = position;
+        public Score(int score, String name) {
             this.score = score;
             this.name = name;
         }
@@ -57,9 +57,6 @@ public class ScoreManager implements Json.Serializable {
         /*
         Getters
          */
-        public String getPosition() {
-            return position;
-        }
         public int getScore() {
             return score;
         }
@@ -70,24 +67,72 @@ public class ScoreManager implements Json.Serializable {
         /*
         Setters
          */
-        public void setPosition(String position) {
-            this.position = position;
-        }
         public void setScore(int score) {
             this.score = score;
         }
         public void setName(String name) {
             this.name = name;
         }
+
+        /*
+        Overridden methods
+         */
+        @Override
+        public int compareTo(Score scoreObject) {
+            if(this.score < scoreObject.getScore()) {
+                return -1;
+            } else if(this.score > scoreObject.getScore()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     // Inner class
     private class HighScores {
-        // TODO should I use a PriorityQueue to order the high scores?
+        /*
+        Variables
+         */
         private ArrayList<Score> highScores;
 
+        /*
+        Constructors
+         */
         public HighScores() {
-            highScores = new ArrayList<Score>(10);
+            highScores = new ArrayList<Score>();
+        }
+
+        /*
+        Getters
+         */
+        public ArrayList<Score> getHighScores() {
+            return highScores;
+        }
+
+        /*
+        Setters
+         */
+        public void setHighScores(ArrayList<Score> highScores) {
+            this.highScores = highScores;
+            filterScores();
+        }
+
+        /*
+        Other Methods
+         */
+        public void addNewScore(Score newScore) {
+            highScores.add(newScore);
+            filterScores();
+        }
+
+        public void filterScores() {
+            Collections.sort(highScores);
+            if(highScores.size() > 10) {
+                for(int iter = 0; iter < (highScores.size() - 10); iter++) {
+                    highScores.remove(highScores.size() - 1);
+                }
+            }
         }
     }
 
