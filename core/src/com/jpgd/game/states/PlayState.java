@@ -248,6 +248,7 @@ public class PlayState extends State{
     }
 
     public boolean checkForNewHighScore() {
+        // TODO Update this to use the ScoreManager
         if (score < 0) {
             score = 0;
         }

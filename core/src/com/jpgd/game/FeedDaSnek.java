@@ -66,6 +66,10 @@ public class FeedDaSnek extends Game {
 		return sfxVolume;
 	}
 
+	public ScoreManager getScoreManager() {
+		return scoreManager;
+	}
+
 	/*
     Other Methods
     */
@@ -97,6 +101,7 @@ public class FeedDaSnek extends Game {
 		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		orthographicCamera.update();
 		preferences = Gdx.app.getPreferences("Preferences");
+		scoreManager = new ScoreManager(this);
 
 
 		//this.setScreen(new PlayState(this));

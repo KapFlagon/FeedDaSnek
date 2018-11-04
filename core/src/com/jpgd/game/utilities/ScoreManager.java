@@ -1,32 +1,60 @@
 package com.jpgd.game.utilities;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.jpgd.game.FeedDaSnek;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ScoreManager implements Json.Serializable {
+public class ScoreManager {
     // TODO make this class the central point for reading/writing the high score data
-    HighScores highScores;
+    FeedDaSnek feedDaSnek;
+    FileHandle fileHandle_highScores;
     Json json;
+    HighScores highScores;
 
-    public ScoreManager() {
-        highScores = new HighScores();
+    public ScoreManager(FeedDaSnek feedDaSnek) {
+        this.feedDaSnek = feedDaSnek;
+        fileHandle_highScores = this.feedDaSnek.getGameAssetManager().getFileHandle_highScores();
         json = new Json();
+        json.setElementType(HighScores.class,"listOfHighScores", Score.class);
+        highScores = new HighScores();
 
     }
 
     /*
-    Overridden methods for JSON serialization
+    Other methods
      */
-    @Override
-    public void write(Json json) {
-
+    public void saveScoreData() {
+        String tempText_uncoded = json.toJson(highScores, HighScores.class);
+        String tempText_encoded = Base64Coder.encodeString(tempText_uncoded);
+        fileHandle_highScores.writeString(tempText_encoded, false);
     }
 
-    @Override
-    public void read(Json json, JsonValue jsonData) {
+    public void loadScoreData() {
+        if(fileHandle_highScores.exists()) {
+            String tempText_encoded = fileHandle_highScores.readString();
+            String tempText_decoded = Base64Coder.decodeString(tempText_encoded);
+            highScores = json.fromJson(HighScores.class, tempText_decoded);
+        }
+        else {
+            for(int generatorIter = 0; generatorIter < 10; generatorIter++) {
+                highScores.addNewScore(new Score());
+            }
+        }
+    }
+
+    public boolean updateScoreData(Score newScore) {
+        boolean newHighScore = highScores.addNewScore(newScore);
+        return newHighScore;
+    }
+    public boolean updateScoreData(String playerName, int score) {
+        Score tempScore = new Score(playerName, score);
+        boolean newHighScore = highScores.addNewScore(tempScore);
+        return newHighScore;
 
     }
 
@@ -43,15 +71,15 @@ public class ScoreManager implements Json.Serializable {
          */
         public Score() {
             score = 0;
-            name = "NONAME";
+            name = "NEWPLAYER";
         }
         public Score(Score scoreObject) {
             this.score = scoreObject.getScore();
             this.name = scoreObject.getName();
         }
-        public Score(int score, String name) {
-            this.score = score;
+        public Score(String name, int score) {
             this.name = name;
+            this.score = score;
         }
 
         /*
@@ -94,43 +122,50 @@ public class ScoreManager implements Json.Serializable {
         /*
         Variables
          */
-        private ArrayList<Score> highScores;
+        private ArrayList<Score> listOfHighScores;
 
         /*
         Constructors
          */
         public HighScores() {
-            highScores = new ArrayList<Score>();
+            listOfHighScores = new ArrayList<Score>();
         }
 
         /*
         Getters
          */
-        public ArrayList<Score> getHighScores() {
-            return highScores;
+        public ArrayList<Score> getListOfHighScores() {
+            return listOfHighScores;
         }
 
         /*
         Setters
          */
-        public void setHighScores(ArrayList<Score> highScores) {
-            this.highScores = highScores;
+        public void setHighScores(ArrayList<Score> listOfHighScores) {
+            this.listOfHighScores = listOfHighScores;
             filterScores();
         }
 
         /*
         Other Methods
          */
-        public void addNewScore(Score newScore) {
-            highScores.add(newScore);
+        public boolean addNewScore(Score newScore) {
+            boolean newHighScore = false;
+            for(int scoreIter = 0; scoreIter < highScores.getListOfHighScores().size(); scoreIter++) {
+                if(newScore.getScore() > highScores.getListOfHighScores().get(scoreIter).getScore()) {
+                    newHighScore = true;
+                }
+            }
+            listOfHighScores.add(newScore);
             filterScores();
+            return newHighScore;
         }
 
         public void filterScores() {
-            Collections.sort(highScores);
-            if(highScores.size() > 10) {
-                for(int iter = 0; iter < (highScores.size() - 10); iter++) {
-                    highScores.remove(highScores.size() - 1);
+            Collections.sort(listOfHighScores);
+            if(listOfHighScores.size() > 10) {
+                for(int iter = 0; iter < (listOfHighScores.size() - 10); iter++) {
+                    listOfHighScores.remove(listOfHighScores.size() - 1);
                 }
             }
         }

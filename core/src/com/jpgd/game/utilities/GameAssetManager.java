@@ -1,8 +1,10 @@
 package com.jpgd.game.utilities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,7 +24,7 @@ public class GameAssetManager {
     private String sfx_path_05, sfx_path_06, sfx_path_07, sfx_path_08;
     private String sfx_path_09, sfx_path_10, sfx_path_11, sfx_path_12;
     private String sfx_path_13, sfx_path_14, sfx_path_15, sfx_path_16;
-    private String fontPath;
+    private String localRoot;
     private String textureAtlasPath;
     private String skin01Path;
 
@@ -35,6 +37,7 @@ public class GameAssetManager {
     private ArrayList<Sound> eatSounds;
     private ArrayList<Sound> sickSounds;
     private Music music;
+    private FileHandle fileHandle_highScores;
 
     /*
     Constructors
@@ -43,8 +46,13 @@ public class GameAssetManager {
 
         assetManager = new AssetManager();
 
-        // initiate strings
+        /*
+        Initiate strings for file paths
+         */
+        // Texture Atlas
         textureAtlasPath = "textures/FeedDaSnek.atlas";
+
+        // Sfx
         sfx_path_01 = "sfx/Death_01.ogg";
         sfx_path_02 = "sfx/Death_02.ogg";
         sfx_path_03 = "sfx/Death_03.ogg";
@@ -62,8 +70,10 @@ public class GameAssetManager {
         sfx_path_15 = "sfx/Sick_04.ogg";
         sfx_path_16 = "sfx/Sick_05.ogg";
 
+        // Music
         musicPath = "music/FeedDaSnek_Theme.mp3";
 
+        // Skins
         skin01Path = "skins/shade/uiskin.json";
 
         deathSounds = new ArrayList<Sound>();
@@ -76,7 +86,7 @@ public class GameAssetManager {
         loadSFX();
         loadMusic();
         loadSkin();
-
+        loadFiles();
     }
 
 
@@ -113,6 +123,10 @@ public class GameAssetManager {
 
     public Skin getSkin() {
         return skin;
+    }
+
+    public FileHandle getFileHandle_highScores() {
+        return fileHandle_highScores;
     }
 
     /*
@@ -154,6 +168,15 @@ public class GameAssetManager {
 
     public void loadSkin() {
         assetManager.load(skin01Path, Skin.class);
+    }
+
+    public void loadFiles() {
+        // Local data storage
+        if(Gdx.files.isExternalStorageAvailable()) {
+            fileHandle_highScores = Gdx.files.external("FeedDaSnek/data/SavedData.txt");
+        } else {
+            fileHandle_highScores = Gdx.files.local("FeedDaSnek/data/SavedData.txt");
+        }
     }
 
 

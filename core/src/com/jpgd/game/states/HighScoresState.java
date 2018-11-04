@@ -16,7 +16,7 @@ public class HighScoresState extends State {
     private Window window;
     private TextButton backButton;
 
-    // TODO Create "High Score" table logic etc
+    // TODO Read data from the ScoreManager, and draw to a table
 
     public HighScoresState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
