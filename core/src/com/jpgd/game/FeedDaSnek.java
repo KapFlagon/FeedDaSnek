@@ -102,6 +102,7 @@ public class FeedDaSnek extends Game {
 		orthographicCamera.update();
 		preferences = Gdx.app.getPreferences("Preferences");
 		scoreManager = new ScoreManager(this);
+		scoreManager.loadScoreData();
 
 
 		//this.setScreen(new PlayState(this));

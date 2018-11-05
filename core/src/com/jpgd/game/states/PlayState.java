@@ -65,6 +65,7 @@ public class PlayState extends State{
         playerNameField.setMaxLength(10);
 
         // TODO Add logic to pull player name data from preferences
+        playerNameField.setText(feedDaSnek.getPreferences().getString("playerName", ""));
     }
 
 
@@ -82,7 +83,7 @@ public class PlayState extends State{
                 }
                 //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
                 snakeCanMove = false;
-                updateEndGameDialog(GameOver.GO_1, checkForNewHighScore());
+                updateEndGameDialog(GameOver.GO_1);
             }
         }
 
@@ -95,7 +96,7 @@ public class PlayState extends State{
                     }
                     //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
                     snakeCanMove = false;
-                    updateEndGameDialog(GameOver.GO_2, checkForNewHighScore());
+                    updateEndGameDialog(GameOver.GO_2);
                 }
             }
         }
@@ -124,7 +125,7 @@ public class PlayState extends State{
                         }
                         //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
                         snakeCanMove = false;
-                        updateEndGameDialog(GameOver.GO_3, checkForNewHighScore());
+                        updateEndGameDialog(GameOver.GO_3);
                     }
                 }
             }
@@ -247,21 +248,6 @@ public class PlayState extends State{
         snake.setSickSounds(gameAssetManager.getSickSounds());
     }
 
-    public boolean checkForNewHighScore() {
-        // TODO Update this to use the ScoreManager
-        if (score < 0) {
-            score = 0;
-        }
-
-        if (score > feedDaSnek.getPreferences().getInteger("highscore", 0)) {
-            feedDaSnek.getPreferences().putInteger("highscore", score);
-            feedDaSnek.getPreferences().flush();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void updateFoodsAndObstacles() {
         float increment = (float) Math.floor(score / 100);
         if (score != 0) {
@@ -335,7 +321,7 @@ public class PlayState extends State{
         snakeCanMove = true;
     }
 
-    private void updateEndGameDialog(GameOver gameOver, boolean newHighScore) {
+    private void updateEndGameDialog(GameOver gameOver) {
         // TODO Add input for player name
         // TODO Check if score is better than all entries on the high score table and replace it
         Gdx.input.setInputProcessor(stage);
@@ -343,6 +329,10 @@ public class PlayState extends State{
             protected void result (Object object) {
                 // TODO add logic to commit user input
                 if(object.equals(1L)) {
+                    feedDaSnek.getPreferences().putString("playername", playerNameField.getText());
+                    feedDaSnek.getPreferences().flush();
+                    feedDaSnek.getScoreManager().updateScoreData(playerNameField.getText(), score);
+                    feedDaSnek.getScoreManager().saveScoreData();
                     resetGame();
                     Gdx.input.setInputProcessor(new InputAdapter(){
                         @Override
@@ -353,12 +343,20 @@ public class PlayState extends State{
                     });
                 } else {
                     // Redirect to main menu
+                    feedDaSnek.getPreferences().putString("playername", playerNameField.getText());
+                    feedDaSnek.getPreferences().flush();
+                    feedDaSnek.getScoreManager().updateScoreData(playerNameField.getText(), score);
+                    feedDaSnek.getScoreManager().saveScoreData();
                     feedDaSnek.setScreen(new StartState(feedDaSnek));
                 }
             }
         };
         dialog.text(gameOver.getReason());
         dialog.getContentTable().row();
+
+        // Check for new high score, and commit to score object
+        boolean newHighScore = feedDaSnek.getScoreManager().checkForNewHighScore(score);
+
         if (newHighScore == true) {
             dialog.text("New High Score!");
             dialog.getContentTable().row();

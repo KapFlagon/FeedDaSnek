@@ -22,25 +22,30 @@ public class ScoreManager {
         json = new Json();
         json.setElementType(HighScores.class,"listOfHighScores", Score.class);
         highScores = new HighScores();
-
     }
 
     /*
     Other methods
      */
     public void saveScoreData() {
+        System.out.println("\nSaving");
         String tempText_uncoded = json.toJson(highScores, HighScores.class);
+        System.out.print(json.prettyPrint(tempText_uncoded));
         String tempText_encoded = Base64Coder.encodeString(tempText_uncoded);
         fileHandle_highScores.writeString(tempText_encoded, false);
     }
 
     public void loadScoreData() {
+        System.out.println("\nLoading");
         if(fileHandle_highScores.exists()) {
+            System.out.println("\nSaved game data exists");
             String tempText_encoded = fileHandle_highScores.readString();
             String tempText_decoded = Base64Coder.decodeString(tempText_encoded);
+            System.out.print(json.prettyPrint(tempText_decoded));
             highScores = json.fromJson(HighScores.class, tempText_decoded);
         }
         else {
+            System.out.println("\nNo score data");
             for(int generatorIter = 0; generatorIter < 10; generatorIter++) {
                 highScores.addNewScore(new Score());
             }
@@ -55,9 +60,13 @@ public class ScoreManager {
         Score tempScore = new Score(playerName, score);
         boolean newHighScore = highScores.addNewScore(tempScore);
         return newHighScore;
-
     }
 
+    public boolean checkForNewHighScore(int score) {
+        return highScores.isNewHighScore(score);
+    }
+
+    // TODO Move inner classes to outer classes and test further
     // Inner class
     private class Score implements Comparable<Score>{
         /*
@@ -108,9 +117,9 @@ public class ScoreManager {
         @Override
         public int compareTo(Score scoreObject) {
             if(this.score < scoreObject.getScore()) {
-                return -1;
-            } else if(this.score > scoreObject.getScore()) {
                 return 1;
+            } else if(this.score > scoreObject.getScore()) {
+                return -1;
             } else {
                 return 0;
             }
@@ -129,6 +138,9 @@ public class ScoreManager {
          */
         public HighScores() {
             listOfHighScores = new ArrayList<Score>();
+        }
+        public HighScores(ArrayList<Score> listOfHighScores) {
+            this.listOfHighScores = listOfHighScores;
         }
 
         /*
@@ -150,12 +162,7 @@ public class ScoreManager {
         Other Methods
          */
         public boolean addNewScore(Score newScore) {
-            boolean newHighScore = false;
-            for(int scoreIter = 0; scoreIter < highScores.getListOfHighScores().size(); scoreIter++) {
-                if(newScore.getScore() > highScores.getListOfHighScores().get(scoreIter).getScore()) {
-                    newHighScore = true;
-                }
-            }
+            boolean newHighScore = isNewHighScore(newScore.getScore());
             listOfHighScores.add(newScore);
             filterScores();
             return newHighScore;
@@ -168,6 +175,16 @@ public class ScoreManager {
                     listOfHighScores.remove(listOfHighScores.size() - 1);
                 }
             }
+        }
+
+        public boolean isNewHighScore(int score) {
+            boolean newHighScore = false;
+            for(int scoreIter = 0; scoreIter < highScores.getListOfHighScores().size(); scoreIter++) {
+                if(score > highScores.getListOfHighScores().get(scoreIter).getScore()) {
+                    newHighScore = true;
+                }
+            }
+            return newHighScore;
         }
     }
 
