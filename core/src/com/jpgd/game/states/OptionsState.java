@@ -24,7 +24,7 @@ public class OptionsState extends State {
     Slider sliderMusic, sliderSfx;
 
 
-    // TODO Create variables for SFX volume, SFX enabled/disabled, music volume, music enabled/disabled etc.
+    // TODO See if changes in slider values can play sounds for reference to the User
 
     public OptionsState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);

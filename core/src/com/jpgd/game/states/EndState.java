@@ -51,7 +51,6 @@ public class EndState extends State {
 
         highScoreButton = new TextButton("High Scores", gameAssetManager.getSkin());
         highScoreButton.addListener(new InputListener() {
-            // TODO Update High Score button logic
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 

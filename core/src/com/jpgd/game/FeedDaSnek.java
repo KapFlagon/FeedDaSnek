@@ -140,3 +140,6 @@ public class FeedDaSnek extends Game {
 		super.resize(width, height);
 	}
 }
+// TODO Every Screen : Ensure that if player exits / pauses, data is saved safely
+// TODO Every Screen : If screen resumes, make sure that data is loaded correctly
+// TODO Every Screen : Overhaul the asset loading so that asset loader is used in each screen, rather than passing copies of assets

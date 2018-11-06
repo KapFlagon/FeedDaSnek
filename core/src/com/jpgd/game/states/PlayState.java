@@ -39,7 +39,7 @@ public class PlayState extends State{
     private boolean snakeCanMove;
     private String playerName;
     private TextField playerNameField;
-
+    // TODO Add space to the screen to display the score to the User during gameplay (KB suggestion)
 
     /*
     Constructors
@@ -65,7 +65,7 @@ public class PlayState extends State{
         playerNameField.setMaxLength(10);
 
         // TODO Add logic to pull player name data from preferences
-        playerNameField.setText(feedDaSnek.getPreferences().getString("playerName", ""));
+        playerNameField.setText(feedDaSnek.getPreferences().getString("playername", ""));
     }
 
 
@@ -139,9 +139,6 @@ public class PlayState extends State{
     }
 
     public void processInput(int keycode) {
-        // TODO Remove bug where if User is quick enough, they can direct the snake back into itself. Add check for multiple blocks in a row maybe?
-        // TODO Remove bug where snake start position can result in game over if snake head is allowed to initially go in the direction of it's body
-
         float tempHeadX = snake.getBodyPoints().get(0).x;
         float tempHeadY = snake.getBodyPoints().get(0).y;
         float tempBodyX = snake.getBodyPoints().get(1).x;
@@ -364,8 +361,7 @@ public class PlayState extends State{
         dialog.text("Score: " + score);
         dialog.getContentTable().row();
         if (newHighScore == true) {
-            dialog.add(playerNameField);
-            dialog.getContentTable().row();
+            dialog.getContentTable().add(playerNameField);
             dialog.getContentTable().row();
         }
         dialog.button("Play Again", 1L);
