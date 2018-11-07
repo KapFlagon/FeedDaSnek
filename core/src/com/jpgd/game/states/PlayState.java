@@ -16,6 +16,7 @@ import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.Direction;
 import com.jpgd.game.objects.Food;
 import com.jpgd.game.objects.GameOver;
+import com.jpgd.game.objects.Hud;
 import com.jpgd.game.objects.Obstacle;
 import com.jpgd.game.objects.Snake;
 import com.jpgd.game.objects.Tile;
@@ -28,6 +29,7 @@ public class PlayState extends State{
     /*
     Variables
      */
+    // TODO Consider adding a background texture instead of using the clear screen colour
     private Stage stage;
     private float dt_total;
     private Random randomizer;
@@ -39,7 +41,8 @@ public class PlayState extends State{
     private boolean snakeCanMove;
     private String playerName;
     private TextField playerNameField;
-    // TODO Add space to the screen to display the score to the User during gameplay (KB suggestion)
+    // TODO Consider adding a dead zone to top of play area for score data (KB suggestion)
+    private Hud hud;
 
     /*
     Constructors
@@ -66,6 +69,7 @@ public class PlayState extends State{
 
         // TODO Add logic to pull player name data from preferences
         playerNameField.setText(feedDaSnek.getPreferences().getString("playername", ""));
+        hud = new Hud(feedDaSnek);
     }
 
 
@@ -136,6 +140,7 @@ public class PlayState extends State{
         if(snakeCanMove == true) {
             snake.move(delta);
         }
+        hud.updateScoreValueLabel(score);
     }
 
     public void processInput(int keycode) {
@@ -217,6 +222,7 @@ public class PlayState extends State{
         }
 
         spriteBatch.end();
+        hud.getHudStage().draw();
     }
 
     public void initializeFoods() {

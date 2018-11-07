@@ -7,11 +7,8 @@ import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.objects.HighScores;
 import com.jpgd.game.objects.Score;
 
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class ScoreManager {
-    // TODO make this class the central point for reading/writing the high score data
     private FeedDaSnek feedDaSnek;
     private FileHandle fileHandle_highScores;
     private Json json;
@@ -46,6 +43,7 @@ public class ScoreManager {
         System.out.println("\nLoading");
         if(fileHandle_highScores.exists()) {
             System.out.println("\nSaved game data exists");
+            // TODO Add file validation. If data is corrupted, see what can be salvaged. If below a certain threshold, generate new file.
             String tempText_encoded = fileHandle_highScores.readString();
             String tempText_decoded = Base64Coder.decodeString(tempText_encoded);
             highScores = json.fromJson(HighScores.class, tempText_decoded);

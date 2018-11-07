@@ -170,6 +170,8 @@ public class GameAssetManager {
         assetManager.load(skin01Path, Skin.class);
     }
 
+    // TODO Move all asset assignments into their relevant state classes
+    // TODO move all unloading into the relevant state classes
     public void loadFiles() {
         // Local data storage
         if(Gdx.files.isExternalStorageAvailable()) {
