@@ -16,20 +16,17 @@ import com.jpgd.game.FeedDaSnek;
 
 public class OptionsState extends State {
 
-    Stage stage;
-    Window window;
-    TextButton submitButton, backButton;
-    Label label_volumeSfx, label_volumeMusic;
-    CheckBox checkBoxMusic, checkBoxSfx;
-    Slider sliderMusic, sliderSfx;
+    private Window window;
+    private TextButton submitButton, backButton;
+    private Label label_volumeSfx, label_volumeMusic;
+    private CheckBox checkBoxMusic, checkBoxSfx;
+    private Slider sliderMusic, sliderSfx;
 
 
     // TODO See if changes in slider values can play sounds for reference to the User
 
     public OptionsState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-
-        stage = new Stage();
 
         window = new Window("Options", feedDaSnek.getGameAssetManager().getSkin());
         window.setSkin(feedDaSnek.getGameAssetManager().getSkin());
@@ -105,7 +102,7 @@ public class OptionsState extends State {
         window.pack();
         window.setPosition((Gdx.graphics.getWidth() - window.getWidth()) / 2 , (Gdx.graphics.getHeight() - window.getHeight()) / 2);
 
-        stage.addActor(window);
+        stateStage.addActor(window);
     }
 
     /*
@@ -113,21 +110,18 @@ public class OptionsState extends State {
      */
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        super.show();
         buildTable();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-        stage.draw();
+        super.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        super.resize(width, height);
     }
 
     @Override
@@ -143,5 +137,10 @@ public class OptionsState extends State {
     @Override
     public void hide() {
 
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }

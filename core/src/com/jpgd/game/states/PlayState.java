@@ -30,7 +30,7 @@ public class PlayState extends State{
     Variables
      */
     // TODO Consider adding a background texture instead of using the clear screen colour
-    private Stage stage;
+    private Stage dialogStage;
     private float dt_total;
     private Random randomizer;
     private Snake snake;
@@ -50,11 +50,12 @@ public class PlayState extends State{
     public PlayState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
 
-        stage = new Stage();
+        dialogStage = new Stage();
         randomizer = new Random();
 
         snake = new Snake(gameAssetManager.getTextureAtlas());
-        snake.setSpeed(0.085f);
+        //snake.setSpeed(0.085f);
+        snake.setSpeed(0.15f);
 
         foods = new ArrayList<Food>();
         obstacles = new ArrayList<Obstacle>();
@@ -327,7 +328,7 @@ public class PlayState extends State{
     private void updateEndGameDialog(GameOver gameOver) {
         // TODO Add input for player name
         // TODO Check if score is better than all entries on the high score table and replace it
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(dialogStage);
         dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin()){
             protected void result (Object object) {
                 // TODO add logic to commit user input
@@ -372,7 +373,7 @@ public class PlayState extends State{
         }
         dialog.button("Play Again", 1L);
         dialog.button("Main Menu", 2L);
-        dialog.show(stage);
+        dialog.show(dialogStage);
     }
 
 
@@ -392,23 +393,20 @@ public class PlayState extends State{
 
     @Override
     public void render(float delta) {
-        //Gdx.gl.glClearColor(0.2f, 0.1f, 0.016f, 1);
         // W3 schools "SaddleBrown" colour
-        Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //processInput(delta);
+        //Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
+        super.render(delta);
         update(delta);
         draw(delta);
-        stage.act();
-        stage.draw();
+
+        dialogStage.act();
+        dialogStage.draw();
     }
 
     // TODO Perform more research on sizing and scaling for other screens etc.
     @Override
     public void resize(int width, int height) {
-        orthographicCamera.viewportWidth = width;
-        orthographicCamera.viewportHeight = height;
-        orthographicCamera.update();
+        super.resize(width, height);
     }
 
     // TODO Add pause logic
@@ -432,5 +430,6 @@ public class PlayState extends State{
     @Override
     public void dispose() {
         super.dispose();
+        dialogStage.dispose();
     }
 }

@@ -17,9 +17,8 @@ import com.jpgd.game.FeedDaSnek;
 
 public class StartState extends State {
 
-    private Stage stage;
     private Table table;
-    private Image background;
+    private Image title;
     private TextButton playButton, optionsButton, highScoreButton;
 
     /*
@@ -27,12 +26,11 @@ public class StartState extends State {
      */
     public StartState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-        stage = new Stage();
         table = new Table();
         table.setFillParent(true);
         table.align(Align.center);
-        background = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("Start_BG"));
 
+        title = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("FeedDaSnek_Title"));
         playButton = new TextButton("Play", gameAssetManager.getSkin());
         playButton.addListener(new InputListener() {
             @Override
@@ -80,8 +78,8 @@ public class StartState extends State {
         table.row();
         table.add(highScoreButton);
 
-        stage.addActor(background);
-        stage.addActor(table);
+        stateStage.addActor(title);
+        stateStage.addActor(table);
 
     }
 
@@ -101,22 +99,19 @@ public class StartState extends State {
      */
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
-
+        super.show();
     }
 
     @Override
     public void render(float delta) {
         //handleInput(delta);
-        stage.draw();
+        super.render(delta);
+        stateStage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        this.stage.getViewport().update(width, height, true);
-        orthographicCamera.viewportWidth = width;
-        orthographicCamera.viewportHeight = height;
-        orthographicCamera.update();
+        super.resize(width, height);
     }
 
     @Override

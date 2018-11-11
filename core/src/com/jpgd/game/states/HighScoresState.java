@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class HighScoresState extends State {
 
-    private Stage stage;
     private Window window;
     private TextButton backButton;
     private ArrayList<Score> listOfHighScores;
@@ -23,7 +22,6 @@ public class HighScoresState extends State {
 
     public HighScoresState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-        stage = new Stage();
         window = new Window("High Scores", feedDaSnek.getGameAssetManager().getSkin());
         window.setSkin(feedDaSnek.getGameAssetManager().getSkin());
         //window.setFillParent(true);
@@ -48,7 +46,8 @@ public class HighScoresState extends State {
     Other methods
      */
     public void buildWindow() {
-        stage.clear();
+        stateStage.clear();
+        stateStage.addActor(background);
         window.layout();
         listOfHighScores = feedDaSnek.getScoreManager().getHighScores().getListOfHighScores();
 
@@ -65,26 +64,23 @@ public class HighScoresState extends State {
 
         window.setPosition((Gdx.graphics.getWidth() - window.getWidth()) / 2 , (Gdx.graphics.getHeight() - window.getHeight()) / 2);
 
-        stage.addActor(window);
+        stateStage.addActor(window);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        super.show();
         buildWindow();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(139/255f, 69/255f, 19/255f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-        stage.draw();
+        super.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        super.resize(width, height);
     }
 
     @Override
@@ -100,5 +96,10 @@ public class HighScoresState extends State {
     @Override
     public void hide() {
 
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }

@@ -180,7 +180,19 @@ public class Snake {
         float rotation = 0;
         switch (direction) {
             case NONE:
-                // Need to determine based on current orientation;
+                if(bodyPoints.get(0).x > bodyPoints.get(1).x) {
+                    // Head is to the right of the body
+                    rotation = 270;
+                } else if(bodyPoints.get(0).x < bodyPoints.get(1).x){
+                    // Head is to the left of the body
+                    rotation = 90;
+                } else if(bodyPoints.get(0).y > bodyPoints.get(1).y) {
+                    // Head is above the body
+                    rotation = 0;
+                } else {
+                    // head is below the body
+                    rotation = 180;
+                }
                 break;
             case LEFT:
                 rotation = 90;
@@ -221,6 +233,49 @@ public class Snake {
         return rotation;
     }
 
+    public float determineBendRotation(int bodyPointIter) {
+        float rotation = 0;
+
+        if ((bodyPoints.get(bodyPointIter - 1).x) > (bodyPoints.get(bodyPointIter).x)) {
+            // leading bodypoint is to the right of current bodypoint
+            if (bodyPoints.get(bodyPointIter).y > bodyPoints.get(bodyPointIter + 1).y) {
+                // Current bodypoint is above trailing bodypoint
+                rotation = 0;
+            } else if (bodyPoints.get(bodyPointIter).y < bodyPoints.get(bodyPointIter + 1).y) {
+                // Current bodypoint is below trailing bodypoint
+                rotation = 90;
+            }
+        } else if (((bodyPoints.get(bodyPointIter - 1).x) < (bodyPoints.get(bodyPointIter).x))) {
+            // leading bodypoint is to the left of current bodypoint
+            if (bodyPoints.get(bodyPointIter).y > bodyPoints.get(bodyPointIter + 1).y) {
+                // Current bodypoint is above trailing bodypoint
+                rotation = 270;
+            } else if (bodyPoints.get(bodyPointIter).y < bodyPoints.get(bodyPointIter + 1).y) {
+                // Current bodypoint is below trailing bodypoint
+                rotation = 180;
+            }
+        } else if ((bodyPoints.get(bodyPointIter - 1).y) > (bodyPoints.get(bodyPointIter).y)) {
+            // leading bodypoint is above current bodypoint
+            if (bodyPoints.get(bodyPointIter).x > bodyPoints.get(bodyPointIter + 1).x) {
+                // Current bodypoint is right of trailing bodypoint
+                rotation = 180;
+            } else if (bodyPoints.get(bodyPointIter).x < bodyPoints.get(bodyPointIter + 1).x) {
+                // Current bodypoint is left of trailing bodypoint
+                rotation = 90;
+            }
+        } else if (((bodyPoints.get(bodyPointIter - 1).y) < (bodyPoints.get(bodyPointIter).y))) {
+            // leading bodypoint is below current bodypoint
+            if (bodyPoints.get(bodyPointIter).x > bodyPoints.get(bodyPointIter + 1).x) {
+                // Current bodypoint is right of trailing bodypoint
+                rotation = 270;
+            } else if (bodyPoints.get(bodyPointIter).x < bodyPoints.get(bodyPointIter + 1).x) {
+                // Current bodypoint is left of trailing bodypoint
+                rotation = 0;
+            }
+        }
+        return rotation;
+    }
+
     public void changeDirection(Direction direction) {
         this.direction = direction;
     }
@@ -242,7 +297,6 @@ public class Snake {
 
     public void render(SpriteBatch spriteBatch) {
         for(int bodyPointsIter = 0; bodyPointsIter < bodyPoints.size(); bodyPointsIter++) {
-            // TODO Determine initial rotation of textureRegions at initialization time
             if(bodyPointsIter == 0) {
                 rotationVal = determineHeadRotation();
                 spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(), head_TexReg.getRegionHeight(), 1, 1, rotationVal);
@@ -250,22 +304,16 @@ public class Snake {
                 rotationVal = determineRotation(bodyPoints.size()-1);
                 spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (tail_TexReg.getRegionWidth() / 2), (tail_TexReg.getRegionHeight() / 2), tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight(), 1, 1, rotationVal);
             } else {
-                // TODO Compare previous vector with current vector, use "bend" piece and deterimine rotation for textureRegion
-                /*
-                Compare current vector to next vector
-                Select
-                 */
-                rotationVal = determineRotation(bodyPointsIter);
-
                 if(
                     // If last body point x is same as current body point, and next body point x is same as current body point use straight piece. OR, same checks for y positions.
                     ( (bodyPoints.get(bodyPointsIter-1).x) == (bodyPoints.get(bodyPointsIter).x) && (bodyPoints.get(bodyPointsIter+1).x) == (bodyPoints.get(bodyPointsIter).x) )
                     || ( (bodyPoints.get(bodyPointsIter-1).y) == (bodyPoints.get(bodyPointsIter).y) && (bodyPoints.get(bodyPointsIter+1).y) == (bodyPoints.get(bodyPointsIter).y) )
                         ) {
+                    rotationVal = determineRotation(bodyPointsIter);
                     spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyStraight_TexReg.getRegionWidth()/2), (bodyStraight_TexReg.getRegionHeight()/2), bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight(), 1, 1, rotationVal);
                 } else {
-                    // TODO May need separate function for bend piece rotation
                     // Every other scenario, use bend piece
+                    rotationVal = determineBendRotation(bodyPointsIter);
                     spriteBatch.draw(bodyBend_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyBend_TexReg.getRegionWidth()/2), (bodyBend_TexReg.getRegionHeight()/2), bodyBend_TexReg.getRegionWidth(), bodyBend_TexReg.getRegionHeight(), 1, 1, rotationVal);
                 }
             }
