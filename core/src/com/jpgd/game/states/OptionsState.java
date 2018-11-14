@@ -100,7 +100,7 @@ public class OptionsState extends State {
 
         // Packs the window to the size of the child elements
         window.pack();
-        window.setPosition((Gdx.graphics.getWidth() - window.getWidth()) / 2 , (Gdx.graphics.getHeight() - window.getHeight()) / 2);
+        window.setPosition((getViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getViewport().getMinWorldHeight() - window.getHeight()) / 2);
 
         stateStage.addActor(window);
     }

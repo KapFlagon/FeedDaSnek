@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.states.*;
 import com.jpgd.game.utilities.GameAssetManager;
@@ -26,7 +27,7 @@ public class FeedDaSnek extends Game {
 	private GameAssetManager gameAssetManager;
 	private ScoreManager scoreManager;
 	private OrthographicCamera orthographicCamera;
-	private Viewport viewport;
+	private ExtendViewport viewport;
 	private Preferences preferences;
 	private boolean musicOn, sfxOn;
 	private float musicVolume, sfxVolume;
@@ -70,6 +71,10 @@ public class FeedDaSnek extends Game {
 		return scoreManager;
 	}
 
+	public ExtendViewport getViewport() {
+		return viewport;
+	}
+
 	/*
     Other Methods
     */
@@ -98,8 +103,9 @@ public class FeedDaSnek extends Game {
 		gameAssetManager = new GameAssetManager();
 		gameAssetManager.done();
 		orthographicCamera = new OrthographicCamera();
-		orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
-		orthographicCamera.update();
+		viewport = new ExtendViewport(V_WIDTH, V_HEIGHT, orthographicCamera);
+		//orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		//orthographicCamera.update();
 		preferences = Gdx.app.getPreferences("Preferences");
 		scoreManager = new ScoreManager(this);
 		scoreManager.loadScoreData();

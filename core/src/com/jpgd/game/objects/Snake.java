@@ -96,7 +96,7 @@ public class Snake {
     /*
         Other methods
          */
-    public void initializeSnake() {
+    public void initializeSnake(float widthBounds, float heightBounds) {
 
         size = 3;
         // Initialize the direction as 0, changed at first key press
@@ -105,14 +105,14 @@ public class Snake {
         tempDirectionVec = new Vector2(0, 0);
         bodyPoints = new ArrayList<Vector2>();
 
-        generateStartPosition();
+        generateStartPosition(widthBounds, heightBounds);
 
     }
-    private void generateStartPosition() {
+    private void generateStartPosition(float widthBounds, float heightBounds) {
         float tempX, tempY;
 
-        float screenX = Gdx.app.getGraphics().getWidth();
-        float screenY = Gdx.app.getGraphics().getHeight();
+        float screenX = widthBounds;
+        float screenY = heightBounds;
 
         tempX = randomizer.nextInt((int)(screenX / texWidth));
         tempY = randomizer.nextInt((int)(screenY / texHeight));

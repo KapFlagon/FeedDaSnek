@@ -95,17 +95,6 @@ public class Tile {
     /*
     Other Methods
     */
-    public void randomizePosition(Random randomizer) {
-        float tempX, tempY;
-
-        float screenX = Gdx.app.getGraphics().getWidth();
-        float screenY = Gdx.app.getGraphics().getHeight();
-
-        tempX = randomizer.nextInt((int)(screenX / width));
-        tempY = randomizer.nextInt((int)(screenY / height));
-
-        this.position.set(tempX * width, tempY * height);
-    }
 
     public void render(SpriteBatch spriteBatch) {
         spriteBatch.draw(textureRegion, position.x, position.y, width, height);

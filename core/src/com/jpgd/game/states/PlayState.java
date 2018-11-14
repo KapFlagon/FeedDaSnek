@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -80,7 +79,7 @@ public class PlayState extends State{
     public void update(float delta) {
 
         // Check if snake head moves out of bounds
-        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= Gdx.app.getGraphics().getWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= Gdx.app.getGraphics().getHeight()) {
+        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= getViewport().getMinWorldWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= getViewport().getMinWorldHeight()) {
             // Snake has extended outside of boundaries of screen, game over
             if(snakeCanMove == true) {
                 if (feedDaSnek.isSfxOn() == true) {
@@ -237,7 +236,7 @@ public class PlayState extends State{
     }
 
     public void initializePositions() {
-        snake.initializeSnake();
+        snake.initializeSnake(getViewport().getMinWorldWidth(), getViewport().getMinWorldHeight());
         for (Food food : foods) {
             generateTilePosition(food);
         }
@@ -308,8 +307,8 @@ public class PlayState extends State{
     }
 
     private Vector2 randomTilePosition(float width, float height) {
-        float screenX = Gdx.app.getGraphics().getWidth();
-        float screenY = Gdx.app.getGraphics().getHeight();
+        float screenX = getViewport().getMinWorldWidth();
+        float screenY = getViewport().getMinWorldHeight();
 
         float tempX = randomizer.nextInt((int)(screenX / width));
         float tempY = randomizer.nextInt((int)(screenY / height));

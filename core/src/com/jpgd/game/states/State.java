@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.FeedDaSnek;
 import com.jpgd.game.utilities.GameAssetManager;
@@ -21,7 +22,7 @@ public abstract class State implements Screen {
     protected SpriteBatch spriteBatch;
     protected GameAssetManager gameAssetManager;
     protected OrthographicCamera orthographicCamera;
-    protected Viewport viewport;
+    protected ExtendViewport viewport;
     protected Image background;
     protected Stage stateStage;
 
@@ -34,8 +35,9 @@ public abstract class State implements Screen {
         this.spriteBatch = feedDaSnek.getSpriteBatch();
         this.gameAssetManager = feedDaSnek.getGameAssetManager();
         this.orthographicCamera = feedDaSnek.getOrthographicCamera();
+        this.viewport = feedDaSnek.getViewport();
         this.background = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("FeedDaSnek_Background"));
-        this.stateStage = new Stage();
+        this.stateStage = new Stage(viewport);
 
         stateStage.addActor(background);
     }
@@ -54,9 +56,13 @@ public abstract class State implements Screen {
         return stateStage;
     }
 
+    public ExtendViewport getViewport() {
+        return viewport;
+    }
+
     /*
-    Setters
-     */
+        Setters
+         */
     public void setSpriteBatch(SpriteBatch spriteBatch) {
         this.spriteBatch = spriteBatch;
     }
@@ -85,9 +91,9 @@ public abstract class State implements Screen {
     @Override
     public void resize(int width, int height) {
         this.stateStage.getViewport().update(width, height, true);
-        this.orthographicCamera.viewportWidth = width;
-        this.orthographicCamera.viewportHeight = height;
-        this.orthographicCamera.update();
+        //this.orthographicCamera.viewportWidth = width;
+        //this.orthographicCamera.viewportHeight = height;
+        //this.orthographicCamera.update();
     }
     @Override
     public void dispose() {

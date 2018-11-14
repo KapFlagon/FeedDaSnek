@@ -20,6 +20,7 @@ public class StartState extends State {
     private Table table;
     private Image title;
     private TextButton playButton, optionsButton, highScoreButton;
+    // TODO Update table so that it uses the viewport min sizes for the button positions
 
     /*
     Constructors
