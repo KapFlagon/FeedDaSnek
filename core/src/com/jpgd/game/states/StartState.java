@@ -28,7 +28,7 @@ public class StartState extends State {
     public StartState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
         table = new Table();
-        table.setFillParent(true);
+        table.setSize(getViewport().getMinWorldWidth(), getViewport().getMinWorldHeight());
         table.align(Align.center);
 
         title = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("FeedDaSnek_Title"));

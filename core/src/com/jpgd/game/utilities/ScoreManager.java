@@ -36,6 +36,7 @@ public class ScoreManager {
         System.out.println("\nSaving");
         String tempText_uncoded = json.toJson(highScores, HighScores.class);
         String tempText_encoded = Base64Coder.encodeString(tempText_uncoded);
+        // TODO next line dumps in android testing, "FileNotFoundException" and "Error writing file"
         fileHandle_highScores.writeString(tempText_encoded, false);
     }
 
