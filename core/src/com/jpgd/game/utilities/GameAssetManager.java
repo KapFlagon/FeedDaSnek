@@ -33,9 +33,6 @@ public class GameAssetManager {
     private Label.LabelStyle labelStyle;
     private TextureAtlas textureAtlas;
     private Skin skin;
-    private ArrayList<Sound> deathSounds;
-    private ArrayList<Sound> eatSounds;
-    private ArrayList<Sound> sickSounds;
     private Music music;
     private FileHandle fileHandle_highScores;
 
@@ -76,23 +73,23 @@ public class GameAssetManager {
         // Skins
         skin01Path = "skins/shade/uiskin.json";
 
-        deathSounds = new ArrayList<Sound>();
-        eatSounds = new ArrayList<Sound>();
-        sickSounds = new ArrayList<Sound>();
-
 
         loadImages();
         loadFonts();
         loadSFX();
         loadMusic();
         loadSkin();
-        loadFiles();
+        loadDataFiles();
     }
 
 
     /*
     Getters
      */
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
+
     public TextureAtlas getTextureAtlas() {
         return textureAtlas;
     }
@@ -104,22 +101,6 @@ public class GameAssetManager {
     public Label.LabelStyle getLabelStyle() {
         return labelStyle;
     }
-    
-    public ArrayList<Sound> getDeathSounds() {
-        return deathSounds;
-    }
-
-    public ArrayList<Sound> getEatSounds() {
-        return eatSounds;
-    }
-
-    public ArrayList<Sound> getSickSounds() {
-        return sickSounds;
-    }
-
-    public Music getMusic() {
-        return music;
-    }
 
     public Skin getSkin() {
         return skin;
@@ -129,12 +110,97 @@ public class GameAssetManager {
         return fileHandle_highScores;
     }
 
+
     /*
-    Loader methods
+    Getters for paths
      */
+
+    public String getMusicPath() {
+        return musicPath;
+    }
+
+    public String getSfx_path_01() {
+        return sfx_path_01;
+    }
+
+    public String getSfx_path_02() {
+        return sfx_path_02;
+    }
+
+    public String getSfx_path_03() {
+        return sfx_path_03;
+    }
+
+    public String getSfx_path_04() {
+        return sfx_path_04;
+    }
+
+    public String getSfx_path_05() {
+        return sfx_path_05;
+    }
+
+    public String getSfx_path_06() {
+        return sfx_path_06;
+    }
+
+    public String getSfx_path_07() {
+        return sfx_path_07;
+    }
+
+    public String getSfx_path_08() {
+        return sfx_path_08;
+    }
+
+    public String getSfx_path_09() {
+        return sfx_path_09;
+    }
+
+    public String getSfx_path_10() {
+        return sfx_path_10;
+    }
+
+    public String getSfx_path_11() {
+        return sfx_path_11;
+    }
+
+    public String getSfx_path_12() {
+        return sfx_path_12;
+    }
+
+    public String getSfx_path_13() {
+        return sfx_path_13;
+    }
+
+    public String getSfx_path_14() {
+        return sfx_path_14;
+    }
+
+    public String getSfx_path_15() {
+        return sfx_path_15;
+    }
+
+    public String getSfx_path_16() {
+        return sfx_path_16;
+    }
+
+    public String getLocalRoot() {
+        return localRoot;
+    }
+
+    public String getTextureAtlasPath() {
+        return textureAtlasPath;
+    }
+
+    public String getSkin01Path() {
+        return skin01Path;
+    }
+
+    /*
+        Loader methods
+         */
     public void loadMusic() {
         assetManager.load(musicPath, Music.class);
-        assetManager.getLogger().info("Music set for loading");
+        assetManager.getLogger().info("Music asset is loaded.");
     }
 
     public void loadFonts() {
@@ -144,7 +210,7 @@ public class GameAssetManager {
 
     public void loadImages() {
         assetManager.load(textureAtlasPath, TextureAtlas.class);
-        assetManager.getLogger().info("TextureAtlas asset set for loading");
+        assetManager.getLogger().info("TextureAtlas asset is loaded.");
     }
 
     public void loadSFX() {
@@ -164,6 +230,7 @@ public class GameAssetManager {
         assetManager.load(sfx_path_14, Sound.class);
         assetManager.load(sfx_path_15, Sound.class);
         assetManager.load(sfx_path_16, Sound.class);
+        assetManager.getLogger().info("SFX assets are loaded.");
     }
 
     public void loadSkin() {
@@ -172,9 +239,10 @@ public class GameAssetManager {
 
     // TODO Move all asset assignments into their relevant state classes
     // TODO move all unloading into the relevant state classes
-    public void loadFiles() {
+    public void loadDataFiles() {
         // Local data storage
         if(Gdx.files.isExternalStorageAvailable()) {
+            // TODO figure out an AssetManager centric means to load the data before assigning it to a variable
             fileHandle_highScores = Gdx.files.external("FeedDaSnek/data/SavedData.txt");
         } else {
             fileHandle_highScores = Gdx.files.local("FeedDaSnek/data/SavedData.txt");
@@ -194,54 +262,6 @@ public class GameAssetManager {
         }
     }
 
-    private void checkAndAssignSounds_A(){
-        // 4 deaths
-        // 7 eats
-        // 5 sicks
-        // Randomise 3 sounds from each batch
-        Random random = new Random();
-        float checkerValue;
-        for(int soundsIter = 0; soundsIter < 3; soundsIter++) {
-            checkerValue = random.nextFloat();
-            if(checkerValue < ((1/4)*1)) {
-                deathSounds.add(assetManager.get(sfx_path_01, Sound.class));
-            } else if (checkerValue >= ((1/4)*2) && checkerValue < ((1/4)*2)) {
-                deathSounds.add(assetManager.get(sfx_path_02, Sound.class));
-            } else if (checkerValue >= ((1/4)*2) && checkerValue < ((1/4)*3)) {
-                deathSounds.add(assetManager.get(sfx_path_03, Sound.class));
-            } else if (checkerValue >= ((1/4)*3)) {
-                deathSounds.add(assetManager.get(sfx_path_04, Sound.class));
-            }
-
-            if (checkerValue < ((1/7)*1)) {
-                eatSounds.add(assetManager.get(sfx_path_05, Sound.class));
-            } else if (checkerValue >= ((1/7)*1) && checkerValue < ((1/7)*2)) {
-                eatSounds.add(assetManager.get(sfx_path_06, Sound.class));
-            } else if (checkerValue >= ((1/7)*2) && checkerValue < ((1/7)*3)) {
-                eatSounds.add(assetManager.get(sfx_path_07, Sound.class));
-            } else if (checkerValue >= ((1/7)*3) && checkerValue < ((1/7)*4)) {
-                eatSounds.add(assetManager.get(sfx_path_08, Sound.class));
-            } else if (checkerValue >= ((1/7)*4) && checkerValue < ((1/7)*5)) {
-                eatSounds.add(assetManager.get(sfx_path_09, Sound.class));
-            } else if (checkerValue >= ((1/7)*5) && checkerValue < ((1/7)*6)) {
-                eatSounds.add(assetManager.get(sfx_path_10, Sound.class));
-            } else if (checkerValue >= ((1/7)*6)) {
-                eatSounds.add(assetManager.get(sfx_path_11, Sound.class));
-            }
-
-            if (checkerValue < ((1/5)*1)) {
-                sickSounds.add(assetManager.get(sfx_path_12, Sound.class));
-            } else if (checkerValue >= ((1/5)*1) && checkerValue < ((1/5)*2)) {
-                sickSounds.add(assetManager.get(sfx_path_13, Sound.class));
-            } else if (checkerValue >= ((1/5)*2) && checkerValue < ((1/5)*3)) {
-                sickSounds.add(assetManager.get(sfx_path_14, Sound.class));
-            } else if (checkerValue >= ((1/5)*3) && checkerValue < ((1/5)*4)) {
-                sickSounds.add(assetManager.get(sfx_path_15, Sound.class));
-            } else if (checkerValue >= ((1/5)*4)) {
-                sickSounds.add(assetManager.get(sfx_path_16, Sound.class));
-            }
-        }
-    }
 
     private void checkMusic() {
         if(assetManager.isLoaded(musicPath)){
@@ -253,25 +273,7 @@ public class GameAssetManager {
         }
     }
 
-    private void checkAndAssignSounds(){
-        // 4 deaths
-        // 7 eats
-        // 5 sicks
-        // Randomise 3 sounds from each batch
 
-        deathSounds.add(assetManager.get(sfx_path_01, Sound.class));
-        deathSounds.add(assetManager.get(sfx_path_02, Sound.class));
-        deathSounds.add(assetManager.get(sfx_path_03, Sound.class));
-
-        eatSounds.add(assetManager.get(sfx_path_05, Sound.class));
-        eatSounds.add(assetManager.get(sfx_path_06, Sound.class));
-        eatSounds.add(assetManager.get(sfx_path_07, Sound.class));
-
-        sickSounds.add(assetManager.get(sfx_path_12, Sound.class));
-        sickSounds.add(assetManager.get(sfx_path_13, Sound.class));
-        sickSounds.add(assetManager.get(sfx_path_14, Sound.class));
-
-    }
 
     private void checkAndAssignSkin(){
         if(assetManager.isLoaded(skin01Path)){
@@ -286,8 +288,8 @@ public class GameAssetManager {
         assetManager.finishLoading();
 
         checkAndAssignTextureAtlas();
-        checkAndAssignSounds();
-        checkMusic();
+        //checkAndAssignSounds();
+        //checkMusic();
         checkAndAssignSkin();
     }
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.states.*;
+import com.jpgd.game.utilities.AudioManager;
 import com.jpgd.game.utilities.GameAssetManager;
 import com.jpgd.game.utilities.ScoreManager;
 
@@ -25,9 +26,10 @@ public class FeedDaSnek extends Game {
 	 */
 	private SpriteBatch spriteBatch;
 	private GameAssetManager gameAssetManager;
+	private AudioManager audioManager;
 	private ScoreManager scoreManager;
 	private OrthographicCamera orthographicCamera;
-	private ExtendViewport viewport;
+	private ExtendViewport extendViewport;
 	private Preferences preferences;
 	private boolean musicOn, sfxOn;
 	private float musicVolume, sfxVolume;
@@ -41,6 +43,10 @@ public class FeedDaSnek extends Game {
 
 	public GameAssetManager getGameAssetManager() {
 		return gameAssetManager;
+	}
+
+	public AudioManager getAudioManager() {
+		return audioManager;
 	}
 
 	public OrthographicCamera getOrthographicCamera() {
@@ -71,8 +77,8 @@ public class FeedDaSnek extends Game {
 		return scoreManager;
 	}
 
-	public ExtendViewport getViewport() {
-		return viewport;
+	public ExtendViewport getExtendViewport() {
+		return extendViewport;
 	}
 
 	/*
@@ -84,11 +90,11 @@ public class FeedDaSnek extends Game {
 		musicVolume = this.getPreferences().getFloat("musicVolume", 1f);
 		sfxVolume = this.getPreferences().getFloat("sfxVolume", 1f);
 
-		gameAssetManager.getMusic().setVolume(musicVolume);
+		audioManager.getMusic().setVolume(musicVolume);
 		if (musicOn == true) {
-			gameAssetManager.getMusic().play();
+			audioManager.getMusic().play();
 		} else {
-			gameAssetManager.getMusic().stop();
+			audioManager.getMusic().stop();
 		}
 	}
 
@@ -102,8 +108,9 @@ public class FeedDaSnek extends Game {
 
 		gameAssetManager = new GameAssetManager();
 		gameAssetManager.done();
+		audioManager = new AudioManager(gameAssetManager);
 		orthographicCamera = new OrthographicCamera();
-		viewport = new ExtendViewport(V_WIDTH, V_HEIGHT, orthographicCamera);
+		extendViewport = new ExtendViewport(V_WIDTH, V_HEIGHT, orthographicCamera);
 		//orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		//orthographicCamera.update();
 		preferences = Gdx.app.getPreferences("Preferences");

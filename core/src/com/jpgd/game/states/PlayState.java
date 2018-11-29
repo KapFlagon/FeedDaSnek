@@ -52,7 +52,7 @@ public class PlayState extends State{
         dialogStage = new Stage();
         randomizer = new Random();
 
-        snake = new Snake(gameAssetManager.getTextureAtlas());
+        snake = new Snake(textureAtlas);
         //snake.setSpeed(0.085f);
         snake.setSpeed(0.15f);
 
@@ -79,7 +79,7 @@ public class PlayState extends State{
     public void update(float delta) {
 
         // Check if snake head moves out of bounds
-        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= getViewport().getMinWorldWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= getViewport().getMinWorldHeight()) {
+        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= getExtendViewport().getMinWorldWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= getExtendViewport().getMinWorldHeight()) {
             // Snake has extended outside of boundaries of screen, game over
             if(snakeCanMove == true) {
                 if (feedDaSnek.isSfxOn() == true) {
@@ -227,16 +227,16 @@ public class PlayState extends State{
 
     public void initializeFoods() {
         foods.clear();
-        foods.add(new Food(gameAssetManager.getTextureAtlas()));
+        foods.add(new Food(textureAtlas));
     }
 
     public void initializeObstacles() {
         obstacles.clear();
-        obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
+        obstacles.add(new Obstacle(textureAtlas));
     }
 
     public void initializePositions() {
-        snake.initializeSnake(getViewport().getMinWorldWidth(), getViewport().getMinWorldHeight());
+        snake.initializeSnake(getExtendViewport().getMinWorldWidth(), getExtendViewport().getMinWorldHeight());
         for (Food food : foods) {
             generateTilePosition(food);
         }
@@ -246,9 +246,9 @@ public class PlayState extends State{
     }
 
     public void assignSounds() {
-        snake.setDeathSounds(gameAssetManager.getDeathSounds());
-        snake.setEatSounds(gameAssetManager.getEatSounds());
-        snake.setSickSounds(gameAssetManager.getSickSounds());
+        snake.setDeathSounds(audioManager.getDeathSounds());
+        snake.setEatSounds(audioManager.getEatSounds());
+        snake.setSickSounds(audioManager.getSickSounds());
     }
 
     public void updateFoodsAndObstacles() {
@@ -256,9 +256,9 @@ public class PlayState extends State{
         if (score != 0) {
             // Get the nearest lower increment
             if( ((foods.size() - 1) < increment) && ((obstacles.size() - 1) < increment) ) { // If the size of the arraylists (minus 1) is less than or equal to the increment, add a Food object
-                foods.add(new Food(gameAssetManager.getTextureAtlas()));
+                foods.add(new Food(textureAtlas));
                 generateTilePosition(foods.get(foods.size() - 1));
-                obstacles.add(new Obstacle(gameAssetManager.getTextureAtlas()));
+                obstacles.add(new Obstacle(textureAtlas));
                 generateTilePosition(obstacles.get(obstacles.size() - 1));
             } else if( ((foods.size() - 1) > increment) && ((obstacles.size() - 1) > increment) ) {  // if the size is greater than the increment then remove an entry
                 foods.remove(foods.size() - 1);
@@ -307,8 +307,8 @@ public class PlayState extends State{
     }
 
     private Vector2 randomTilePosition(float width, float height) {
-        float screenX = getViewport().getMinWorldWidth();
-        float screenY = getViewport().getMinWorldHeight();
+        float screenX = getExtendViewport().getMinWorldWidth();
+        float screenY = getExtendViewport().getMinWorldHeight();
 
         float tempX = randomizer.nextInt((int)(screenX / width));
         float tempY = randomizer.nextInt((int)(screenY / height));

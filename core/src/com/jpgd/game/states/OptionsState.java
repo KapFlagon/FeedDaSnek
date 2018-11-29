@@ -37,8 +37,6 @@ public class OptionsState extends State {
         submitButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // TODO add logic to submit changes and save them
-
                 getFeedDaSnek().getPreferences().putBoolean("musicOn", checkBoxMusic.isChecked());
                 getFeedDaSnek().getPreferences().putBoolean("sfxOn", checkBoxSfx.isChecked());
                 getFeedDaSnek().getPreferences().putFloat("musicVolume", (sliderMusic.getValue() / 100));
@@ -100,7 +98,7 @@ public class OptionsState extends State {
 
         // Packs the window to the size of the child elements
         window.pack();
-        window.setPosition((getViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getViewport().getMinWorldHeight() - window.getHeight()) / 2);
+        window.setPosition((getExtendViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getExtendViewport().getMinWorldHeight() - window.getHeight()) / 2);
 
         stateStage.addActor(window);
     }

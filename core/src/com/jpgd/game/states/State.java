@@ -5,12 +5,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jpgd.game.FeedDaSnek;
+import com.jpgd.game.utilities.AudioManager;
 import com.jpgd.game.utilities.GameAssetManager;
 
 public abstract class State implements Screen {
@@ -21,8 +23,11 @@ public abstract class State implements Screen {
     protected FeedDaSnek feedDaSnek;
     protected SpriteBatch spriteBatch;
     protected GameAssetManager gameAssetManager;
+    protected AudioManager audioManager;
     protected OrthographicCamera orthographicCamera;
-    protected ExtendViewport viewport;
+    protected ExtendViewport extendViewport;
+    protected String textureAtlasPath;
+    protected TextureAtlas textureAtlas;
     protected Image background;
     protected Stage stateStage;
 
@@ -34,10 +39,15 @@ public abstract class State implements Screen {
         this.feedDaSnek = feedDaSnek;
         this.spriteBatch = feedDaSnek.getSpriteBatch();
         this.gameAssetManager = feedDaSnek.getGameAssetManager();
+        this.audioManager = feedDaSnek.getAudioManager();
         this.orthographicCamera = feedDaSnek.getOrthographicCamera();
-        this.viewport = feedDaSnek.getViewport();
-        this.background = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("FeedDaSnek_Background"));
-        this.stateStage = new Stage(viewport);
+        this.extendViewport = feedDaSnek.getExtendViewport();
+
+        this.textureAtlasPath = gameAssetManager.getTextureAtlasPath();
+        this.textureAtlas = gameAssetManager.getAssetManager().get(textureAtlasPath, TextureAtlas.class);
+
+        this.background = new Image(textureAtlas.findRegion("FeedDaSnek_Background"));
+        this.stateStage = new Stage(this.extendViewport);
 
         stateStage.addActor(background);
     }
@@ -56,8 +66,8 @@ public abstract class State implements Screen {
         return stateStage;
     }
 
-    public ExtendViewport getViewport() {
-        return viewport;
+    public ExtendViewport getExtendViewport() {
+        return extendViewport;
     }
 
     /*
@@ -99,6 +109,7 @@ public abstract class State implements Screen {
     public void dispose() {
         spriteBatch.dispose();
         stateStage.dispose();
+        gameAssetManager.getAssetManager().unload(textureAtlasPath);
     }
 
 }

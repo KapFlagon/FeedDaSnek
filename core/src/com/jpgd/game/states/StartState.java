@@ -19,7 +19,8 @@ public class StartState extends State {
 
     private Table table;
     private Image title;
-    private TextButton playButton, optionsButton, highScoreButton;
+    private TextButton howToPlayButton, playButton, optionsButton, highScoreButton;
+    private float buttonLabelScale;
     // TODO Update table so that it uses the viewport min sizes for the button positions
 
     /*
@@ -27,12 +28,28 @@ public class StartState extends State {
      */
     public StartState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
+        buttonLabelScale = 1.4f;
         table = new Table();
-        table.setSize(getViewport().getMinWorldWidth(), getViewport().getMinWorldHeight());
+        table.setSize(getExtendViewport().getMinWorldWidth(), getExtendViewport().getMinWorldHeight());
         table.align(Align.center);
 
         title = new Image(feedDaSnek.getGameAssetManager().getTextureAtlas().findRegion("FeedDaSnek_Title"));
+
+        howToPlayButton = new TextButton("How to Play", gameAssetManager.getSkin());
+        howToPlayButton.getLabel().setFontScale(buttonLabelScale);
+        howToPlayButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                getFeedDaSnek().setScreen(new HowToPlayState(getFeedDaSnek()));
+            }
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         playButton = new TextButton("Play", gameAssetManager.getSkin());
+        playButton.getLabel().setFontScale(buttonLabelScale);
         playButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -46,6 +63,7 @@ public class StartState extends State {
         });
 
         optionsButton = new TextButton("Options", gameAssetManager.getSkin());
+        optionsButton.getLabel().setFontScale(buttonLabelScale);
         optionsButton.addListener(new InputListener() {
             // TODO Update Options button logic
             @Override
@@ -60,6 +78,7 @@ public class StartState extends State {
         });
 
         highScoreButton = new TextButton("High Scores", gameAssetManager.getSkin());
+        highScoreButton.getLabel().setFontScale(buttonLabelScale);
         highScoreButton.addListener(new InputListener() {
             // TODO Update High Score button logic
             @Override
@@ -73,11 +92,14 @@ public class StartState extends State {
             }
         });
 
-        table.add(playButton);
+        table.add(howToPlayButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);
         table.row();
-        table.add(optionsButton);
+        table.add(playButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);;
         table.row();
-        table.add(highScoreButton);
+        table.add(optionsButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);;
+        table.row();
+        table.add(highScoreButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);;
+
 
         stateStage.addActor(title);
         stateStage.addActor(table);
