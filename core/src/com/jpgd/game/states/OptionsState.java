@@ -2,6 +2,8 @@ package com.jpgd.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,8 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import com.jpgd.game.FeedDaSnek;
 
+import java.util.Random;
+
 public class OptionsState extends State {
 
+    /*
+    Variables
+     */
     private Window window;
     private TextButton submitButton, backButton;
     private Label label_volumeSfx, label_volumeMusic;
@@ -23,9 +30,10 @@ public class OptionsState extends State {
     private Slider sliderMusic, sliderSfx;
 
 
-    // TODO See if changes in slider values can play sounds for reference to the User
-
-    public OptionsState(FeedDaSnek feedDaSnek) {
+    /*
+    Constructors
+     */
+    public OptionsState(final FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
 
         window = new Window("Options", feedDaSnek.getGameAssetManager().getSkin());
@@ -37,12 +45,7 @@ public class OptionsState extends State {
         submitButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                getFeedDaSnek().getPreferences().putBoolean("musicOn", checkBoxMusic.isChecked());
-                getFeedDaSnek().getPreferences().putBoolean("sfxOn", checkBoxSfx.isChecked());
-                getFeedDaSnek().getPreferences().putFloat("musicVolume", (sliderMusic.getValue() / 100));
-                getFeedDaSnek().getPreferences().putFloat("sfxVolume", (sliderSfx.getValue() / 100));
-                getFeedDaSnek().getPreferences().flush();
-                getFeedDaSnek().updateAudio();
+                commitSettingsToPrefs();
                 getFeedDaSnek().setScreen(new StartState(getFeedDaSnek()));
             }
 
@@ -52,10 +55,12 @@ public class OptionsState extends State {
             }
         });
 
-        backButton = new TextButton("Back", gameAssetManager.getSkin());
+        backButton = new TextButton("Cancel", gameAssetManager.getSkin());
         backButton.addListener(new InputListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                // Update AudioManager to reset with saved prefs
+                getFeedDaSnek().readPrefs();
                 getFeedDaSnek().setScreen(new StartState(getFeedDaSnek()));
             }
 
@@ -67,16 +72,63 @@ public class OptionsState extends State {
 
         checkBoxMusic = new CheckBox("Music On/Off", feedDaSnek.getGameAssetManager().getSkin());
         checkBoxMusic.setChecked(feedDaSnek.getPreferences().getBoolean("musicOn", true));
+        checkBoxMusic.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(checkBoxMusic.isChecked()) {
+                    audioManager.setMusicOn(true);
+                } else {
+                    audioManager.setMusicOn(false);
+                }
+                return false;
+            }
+        });
+
         checkBoxSfx = new CheckBox("SFX On/Off", feedDaSnek.getGameAssetManager().getSkin());
         checkBoxSfx.setChecked(feedDaSnek.getPreferences().getBoolean("sfxOn", true));
+        checkBoxSfx.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(checkBoxSfx.isChecked()) {
+                    audioManager.setSfxOn(true);
+                } else {
+                    audioManager.setSfxOn(false);
+                }
+                return false;
+            }
+        });
 
         label_volumeMusic = new Label("Music volume:", gameAssetManager.getLabelStyle());
         label_volumeSfx = new Label("SFX volume:", gameAssetManager.getLabelStyle());
 
         sliderMusic = new Slider(0, 100, 1, false, feedDaSnek.getGameAssetManager().getSkin());
-        sliderMusic.setValue(feedDaSnek.getPreferences().getFloat("musicVolume", 1f) * 100);
+        sliderMusic.setValue(audioManager.getMusicVolume() * 100);
+        sliderMusic.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(sliderMusic.isDragging()) {
+                    audioManager.setMusicVolume(sliderMusic.getValue() / 100);
+                }
+                return false;
+            }
+        });
+
         sliderSfx = new Slider(0, 100, 1, false, feedDaSnek.getGameAssetManager().getSkin());
-        sliderSfx.setValue(feedDaSnek.getPreferences().getFloat("sfxVolume",1f) * 100);
+        sliderSfx.setValue(audioManager.getSfxVolume() * 100);
+        sliderSfx.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                if(sliderSfx.isDragging()) {
+                    // Stop current sound, and trigger it again (stops repeated overlaps)
+                    if(audioManager.isSfxOn()) {
+                        audioManager.getSickSounds().get(2).stop();
+                        audioManager.getSickSounds().get(2).play(sliderSfx.getValue() / 100);
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
     /*
@@ -101,6 +153,16 @@ public class OptionsState extends State {
         window.setPosition((getExtendViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getExtendViewport().getMinWorldHeight() - window.getHeight()) / 2);
 
         stateStage.addActor(window);
+    }
+
+    private void commitSettingsToPrefs() {
+        getFeedDaSnek().getPreferences().putBoolean("musicOn", checkBoxMusic.isChecked());
+        getFeedDaSnek().getPreferences().putBoolean("sfxOn", checkBoxSfx.isChecked());
+        getFeedDaSnek().getPreferences().putFloat("musicVolume", (sliderMusic.getValue() / 100));
+        getFeedDaSnek().getPreferences().putFloat("sfxVolume", (sliderSfx.getValue() / 100));
+        getFeedDaSnek().getPreferences().flush();
+        // Update AudioManager to commit latest prefs
+        getFeedDaSnek().readPrefs();
     }
 
     /*

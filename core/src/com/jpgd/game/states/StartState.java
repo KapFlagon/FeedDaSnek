@@ -110,7 +110,6 @@ public class StartState extends State {
     Other Methods
      */
     public void handleInput(float delta) {
-        // TODO Remove bug where if user presses direction key, snake begins moving immediately. Maybe use button release
         if((Gdx.input.isTouched()) || (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY))) {
             feedDaSnek.setScreen(new PlayState(feedDaSnek));
         }

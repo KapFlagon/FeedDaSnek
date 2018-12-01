@@ -28,7 +28,6 @@ public class PlayState extends State{
     /*
     Variables
      */
-    // TODO Consider adding a background texture instead of using the clear screen colour
     private Stage dialogStage;
     private float dt_total;
     private Random randomizer;
@@ -37,7 +36,6 @@ public class PlayState extends State{
     private ArrayList<Obstacle> obstacles;
     private int score;
     private Dialog dialog;
-    private boolean snakeCanMove;
     private String playerName;
     private TextField playerNameField;
     // TODO Consider adding a dead zone to top of play area for score data (KB suggestion)
@@ -67,7 +65,6 @@ public class PlayState extends State{
         playerNameField = new TextField("", feedDaSnek.getGameAssetManager().getSkin());
         playerNameField.setMaxLength(10);
 
-        // TODO Add logic to pull player name data from preferences
         playerNameField.setText(feedDaSnek.getPreferences().getString("playername", ""));
         hud = new Hud(feedDaSnek);
     }
@@ -81,12 +78,9 @@ public class PlayState extends State{
         // Check if snake head moves out of bounds
         if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= getExtendViewport().getMinWorldWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= getExtendViewport().getMinWorldHeight()) {
             // Snake has extended outside of boundaries of screen, game over
-            if(snakeCanMove == true) {
-                if (feedDaSnek.isSfxOn() == true) {
-                    snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
-                }
+            if(snake.getSnakeCanMove() == true) {
+                snake.die(feedDaSnek.getAudioManager());
                 //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_1).setScoreNumLabels(score));
-                snakeCanMove = false;
                 updateEndGameDialog(GameOver.GO_1);
             }
         }
@@ -94,12 +88,9 @@ public class PlayState extends State{
         // Check if snake head touches any other part of the snakes
         for(int bodyPointsIter = 1; bodyPointsIter < snake.getBodyPoints().size(); bodyPointsIter++) {
             if(snake.getBodyPoints().get(0).epsilonEquals(snake.getBodyPoints().get(bodyPointsIter))) {
-                if(snakeCanMove == true) {
-                    if (feedDaSnek.isSfxOn() == true) {
-                        snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
-                    }
+                if(snake.getSnakeCanMove() == true) {
+                    snake.die(feedDaSnek.getAudioManager());
                     //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_2).setScoreNumLabels(score));
-                    snakeCanMove = false;
                     updateEndGameDialog(GameOver.GO_2);
                 }
             }
@@ -110,7 +101,7 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(food.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + food.getValue();
-                snake.grow(feedDaSnek);
+                snake.grow(feedDaSnek.getAudioManager());
                 generateTilePosition(food);
             }
         }
@@ -119,16 +110,13 @@ public class PlayState extends State{
             if(snake.getBodyPoints().get(0).epsilonEquals(obstacle.getPosition())) {
                 // Shares position, snake has eaten food item
                 score = score + obstacle.getValue();
-                snake.shrink(feedDaSnek);
+                snake.shrink(feedDaSnek.getAudioManager());
                 generateTilePosition(obstacle);
 
                 if(snake.getBodyPoints().size() < 3) {
-                    if(snakeCanMove == true) {
-                        if (feedDaSnek.isSfxOn() == true) {
-                            snake.getDeathSounds().get(randomizer.nextInt(snake.getDeathSounds().size())).play(feedDaSnek.getSfxVolume());
-                        }
+                    if(snake.getSnakeCanMove() == true) {
+                        snake.die(feedDaSnek.getAudioManager());
                         //feedDaSnek.setScreen(new EndState(feedDaSnek).setGameOverReason(GameOver.GO_3).setScoreNumLabels(score));
-                        snakeCanMove = false;
                         updateEndGameDialog(GameOver.GO_3);
                     }
                 }
@@ -137,7 +125,7 @@ public class PlayState extends State{
 
         updateFoodsAndObstacles();
         // Move the snake
-        if(snakeCanMove == true) {
+        if(snake.getSnakeCanMove() == true) {
             snake.move(delta);
         }
         hud.updateScoreValueLabel(score);
@@ -321,12 +309,10 @@ public class PlayState extends State{
         initializeFoods();
         initializeObstacles();
         initializePositions();
-        snakeCanMove = true;
+        snake.setSnakeCanMove(true);
     }
 
     private void updateEndGameDialog(GameOver gameOver) {
-        // TODO Add input for player name
-        // TODO Check if score is better than all entries on the high score table and replace it
         Gdx.input.setInputProcessor(dialogStage);
         dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin()){
             protected void result (Object object) {

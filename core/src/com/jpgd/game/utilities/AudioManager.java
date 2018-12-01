@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AudioManager {
 
@@ -24,6 +25,9 @@ public class AudioManager {
     private String sfx_path_05, sfx_path_06, sfx_path_07, sfx_path_08;
     private String sfx_path_09, sfx_path_10, sfx_path_11, sfx_path_12;
     private String sfx_path_13, sfx_path_14, sfx_path_15, sfx_path_16;
+
+    private boolean musicOn, sfxOn;
+    private float musicVolume, sfxVolume;
 
 
     /*
@@ -64,7 +68,6 @@ public class AudioManager {
     /*
     Getters
      */
-
     public Music getMusic() {
         return music;
     }
@@ -81,10 +84,53 @@ public class AudioManager {
         return sickSounds;
     }
 
+    public boolean isMusicOn() {
+        return musicOn;
+    }
+
+    public boolean isSfxOn() {
+        return sfxOn;
+    }
+
+    public float getMusicVolume() {
+        return musicVolume;
+    }
+
+    public float getSfxVolume() {
+        return sfxVolume;
+    }
+
 
     /*
-    Other methods
+    Setters
      */
+    public void setMusicOn(boolean musicOn) {
+        this.musicOn = musicOn;
+        if (musicOn == true) {
+            music.setLooping(true);
+            music.play();
+        } else {
+            music.stop();
+        }
+    }
+
+    public void setSfxOn(boolean sfxOn) {
+        this.sfxOn = sfxOn;
+    }
+
+    public void setMusicVolume(float musicVolume) {
+        this.musicVolume = musicVolume;
+        music.setVolume(musicVolume);
+    }
+
+    public void setSfxVolume(float sfxVolume) {
+        this.sfxVolume = sfxVolume;
+
+    }
+
+    /*
+        Other methods
+         */
     private void assignSFX(){
         // 4 deaths
         // 7 eats
@@ -115,6 +161,25 @@ public class AudioManager {
             gameAssetManager.getAssetManager().getLogger().info("Music asset is not loaded yet.");
         }
     }
+
+    public void playDeathSound(Random randomizer) {
+        if (sfxOn) {
+            deathSounds.get(randomizer.nextInt(deathSounds.size())).play(sfxVolume);
+        }
+    }
+
+    public void playEatSound(Random randomizer) {
+        if (sfxOn) {
+            eatSounds.get(randomizer.nextInt(eatSounds.size())).play(sfxVolume);
+        }
+    }
+
+    public void playSickSound(Random randomizer) {
+        if (sfxOn) {
+            sickSounds.get(randomizer.nextInt(sickSounds.size())).play(sfxVolume);
+        }
+    }
+
 
     public void dispose() {
         gameAssetManager.getAssetManager().unload(musicPath);

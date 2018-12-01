@@ -31,8 +31,7 @@ public class FeedDaSnek extends Game {
 	private OrthographicCamera orthographicCamera;
 	private ExtendViewport extendViewport;
 	private Preferences preferences;
-	private boolean musicOn, sfxOn;
-	private float musicVolume, sfxVolume;
+
 
 	/*
 	Getters
@@ -57,22 +56,6 @@ public class FeedDaSnek extends Game {
 		return preferences;
 	}
 
-	public boolean isMusicOn() {
-		return musicOn;
-	}
-
-	public boolean isSfxOn() {
-		return sfxOn;
-	}
-
-	public float getMusicVolume() {
-		return musicVolume;
-	}
-
-	public float getSfxVolume() {
-		return sfxVolume;
-	}
-
 	public ScoreManager getScoreManager() {
 		return scoreManager;
 	}
@@ -84,18 +67,11 @@ public class FeedDaSnek extends Game {
 	/*
     Other Methods
     */
-	public void updateAudio() {
-		musicOn = this.getPreferences().getBoolean("musicOn", true);
-		sfxOn = this.getPreferences().getBoolean("sfxOn", true);
-		musicVolume = this.getPreferences().getFloat("musicVolume", 1f);
-		sfxVolume = this.getPreferences().getFloat("sfxVolume", 1f);
-
-		audioManager.getMusic().setVolume(musicVolume);
-		if (musicOn == true) {
-			audioManager.getMusic().play();
-		} else {
-			audioManager.getMusic().stop();
-		}
+	public void readPrefs() {
+		audioManager.setMusicOn(this.getPreferences().getBoolean("musicOn", true));
+		audioManager.setSfxOn(this.getPreferences().getBoolean("sfxOn", true));
+		audioManager.setMusicVolume(this.getPreferences().getFloat("musicVolume", 1f));
+		audioManager.setSfxVolume(this.getPreferences().getFloat("sfxVolume", 1f));
 	}
 
 	/*
@@ -119,7 +95,7 @@ public class FeedDaSnek extends Game {
 
 
 		//this.setScreen(new PlayState(this));
-		updateAudio();
+		readPrefs();
 
 		// TODO Consider adding some screen management so new screens are not always being created
 		this.setScreen(new StartState(this));

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.jpgd.game.FeedDaSnek;
+import com.jpgd.game.utilities.AudioManager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,6 +27,8 @@ public class Snake {
     private ArrayList<Vector2> bodyPoints;
     private float texWidth, texHeight, speed, dt_total, rotationVal;
     private ArrayList<Sound> deathSounds, eatSounds, sickSounds;
+    private boolean snakeCanMove;
+
 
 
     /*
@@ -44,6 +47,7 @@ public class Snake {
 
         dt_total = 0;
         rotationVal = 0;
+        snakeCanMove = false;
     }
 
     /*
@@ -73,10 +77,13 @@ public class Snake {
         return texHeight;
     }
 
+    public boolean getSnakeCanMove() {
+        return snakeCanMove;
+    }
 
     /*
-    Setters
-     */
+        Setters
+         */
     public void setSpeed(float speed) {
         this.speed = speed;
     }
@@ -91,6 +98,10 @@ public class Snake {
 
     public void setSickSounds(ArrayList<Sound> sickSounds) {
         this.sickSounds = sickSounds;
+    }
+
+    public void setSnakeCanMove(boolean snakeCanMove) {
+        this.snakeCanMove = snakeCanMove;
     }
 
     /*
@@ -280,19 +291,20 @@ public class Snake {
         this.direction = direction;
     }
 
-    public void grow(FeedDaSnek feedDaSnek) {
-        if (feedDaSnek.isSfxOn() == true) {
-            eatSounds.get(randomizer.nextInt(sickSounds.size())).play(feedDaSnek.getSfxVolume());
-        }
+    public void grow(AudioManager audioManager) {
+        audioManager.playEatSound(randomizer);
         // Duplicates last item and adds to end of ArrayList
         bodyPoints.add(bodyPoints.get(bodyPoints.size() - 1));
     }
 
-    public void shrink(FeedDaSnek feedDaSnek) {
-        if (feedDaSnek.isSfxOn() == true) {
-            sickSounds.get(randomizer.nextInt(sickSounds.size())).play(feedDaSnek.getSfxVolume());
-        }
+    public void shrink(AudioManager audioManager) {
+        audioManager.playSickSound(randomizer);
         bodyPoints.remove(bodyPoints.size() - 1);
+    }
+
+    public void die(AudioManager audioManager) {
+        audioManager.playDeathSound(randomizer);
+        snakeCanMove = false;
     }
 
     public void render(SpriteBatch spriteBatch) {

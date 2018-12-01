@@ -18,8 +18,9 @@ public class HighScoresState extends State {
     private TextButton backButton;
     private ArrayList<Score> listOfHighScores;
 
-    // TODO Read data from the ScoreManager, and draw to a table
-
+    /*
+    Constructors
+     */
     public HighScoresState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
         window = new Window("High Scores", feedDaSnek.getGameAssetManager().getSkin());
