@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.jpgd.game.FeedDaSnek;
@@ -131,6 +132,7 @@ public class PlayState extends State{
         hud.updateScoreValueLabel(score);
     }
 
+    // TODO examine phone controls using gestures
     public void processInput(int keycode) {
         float tempHeadX = snake.getBodyPoints().get(0).x;
         float tempHeadY = snake.getBodyPoints().get(0).y;
@@ -316,7 +318,6 @@ public class PlayState extends State{
         Gdx.input.setInputProcessor(dialogStage);
         dialog = new Dialog("Game Over", feedDaSnek.getGameAssetManager().getSkin()){
             protected void result (Object object) {
-                // TODO add logic to commit user input
                 if(object.equals(1L)) {
                     feedDaSnek.getPreferences().putString("playername", playerNameField.getText());
                     feedDaSnek.getPreferences().flush();

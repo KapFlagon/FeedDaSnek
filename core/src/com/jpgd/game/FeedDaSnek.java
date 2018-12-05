@@ -20,6 +20,7 @@ public class FeedDaSnek extends Game {
 	public final static String TITLE = "Feed Da Snek";
 	public final static int V_WIDTH = 480;
 	public final static int V_HEIGHT = 800;
+	public final static float TEXT_SCALE = 1.4f;
 
 	/*
 	Variables

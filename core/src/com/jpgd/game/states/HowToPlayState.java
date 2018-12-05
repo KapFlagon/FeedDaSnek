@@ -4,6 +4,7 @@ import com.jpgd.game.FeedDaSnek;
 
 public class HowToPlayState extends State {
 
+    // TODO Create a "How To Play" screen with paged information
     public HowToPlayState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
     }

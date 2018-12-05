@@ -28,7 +28,7 @@ public class StartState extends State {
      */
     public StartState(FeedDaSnek feedDaSnek) {
         super(feedDaSnek);
-        buttonLabelScale = 1.4f;
+        buttonLabelScale = FeedDaSnek.TEXT_SCALE;
         table = new Table();
         table.setSize(getExtendViewport().getMinWorldWidth(), getExtendViewport().getMinWorldHeight());
         table.align(Align.center);

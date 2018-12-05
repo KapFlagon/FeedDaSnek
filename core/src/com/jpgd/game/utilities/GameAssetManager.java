@@ -240,13 +240,11 @@ public class GameAssetManager {
     // TODO Move all asset assignments into their relevant state classes
     // TODO move all unloading into the relevant state classes
     public void loadDataFiles() {
+        // TODO Investigate implementing a text loader in the asset manager
         // Local data storage
-        if(Gdx.files.isExternalStorageAvailable()) {
-            // TODO figure out an AssetManager centric means to load the data before assigning it to a variable
-            fileHandle_highScores = Gdx.files.external("FeedDaSnek/data/SavedData.txt");
-        } else {
-            fileHandle_highScores = Gdx.files.local("FeedDaSnek/data/SavedData.txt");
-        }
+        fileHandle_highScores = Gdx.files.local("FeedDaSnek/data/SavedData.txt");
+        System.out.println("External Path: " + Gdx.files.getLocalStoragePath());
+
     }
 
 
