@@ -20,6 +20,7 @@ import com.jpgd.game.objects.Hud;
 import com.jpgd.game.objects.Obstacle;
 import com.jpgd.game.objects.Snake;
 import com.jpgd.game.objects.Tile;
+import com.jpgd.game.utilities.InputHandler;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -41,6 +42,7 @@ public class PlayState extends State{
     private TextField playerNameField;
     // TODO Consider adding a dead zone to top of play area for score data (KB suggestion)
     private Hud hud;
+    private InputHandler inputHandler;
 
     /*
     Constructors
@@ -68,6 +70,7 @@ public class PlayState extends State{
 
         playerNameField.setText(feedDaSnek.getPreferences().getString("playername", ""));
         hud = new Hud(feedDaSnek);
+        inputHandler = new InputHandler(snake);
     }
 
 
@@ -130,72 +133,6 @@ public class PlayState extends State{
             snake.move(delta);
         }
         hud.updateScoreValueLabel(score);
-    }
-
-    // TODO examine phone controls using gestures
-    public void processInput(int keycode) {
-        float tempHeadX = snake.getBodyPoints().get(0).x;
-        float tempHeadY = snake.getBodyPoints().get(0).y;
-        float tempBodyX = snake.getBodyPoints().get(1).x;
-        float tempBodyY = snake.getBodyPoints().get(1).y;
-        float tempWidth = snake.getTexWidth();
-        float tempHeight = snake.getTexHeight();
-
-        if(keycode == Input.Keys.LEFT) {
-            if(snake.getDirection().getVector().x != 0) {
-                // no direction change as it would
-                // a) cause the snake to go back on itself
-                // b) simply go in same direction
-            } else {
-                if ((tempHeadX - tempWidth) == tempBodyX) {
-                    // Do nothing, no change in direction
-                } else {
-                    snake.changeDirection(Direction.LEFT);
-                }
-            }
-        }
-
-        if(keycode == Input.Keys.RIGHT) {
-            if(snake.getDirection().getVector().x != 0) {
-                // no direction change as it would
-                // a) cause the snake to go back on itself
-                // b) simply go in same direction
-            } else {
-                if ((tempHeadX + tempWidth) == tempBodyX) {
-                    // Do nothing, no change in direction
-                } else {
-                    snake.changeDirection(Direction.RIGHT);
-                }
-            }
-        }
-
-        if(keycode == Input.Keys.UP) {
-            if(snake.getDirection().getVector().y != 0) {
-                // no direction change as it would
-                // a) cause the snake to go back on itself
-                // b) simply go in same direction
-            } else {
-                if ((tempHeadY + tempHeight) == tempBodyY) {
-                    // Do nothing, no change in direction
-                } else {
-                    snake.changeDirection(Direction.UP);
-                }
-            }
-        }
-
-        if(keycode == Input.Keys.DOWN) {
-            if(snake.getDirection().getVector().y != 0) {
-                // no direction change as it would
-                // a) cause the snake to go back on itself
-                // b) simply go in same direction
-            } else {
-                if ((tempHeadY - tempHeight) == tempBodyY) {
-                    // Do nothing, no change in direction
-                } else {
-                    snake.changeDirection(Direction.DOWN);
-                }
-            }
-        }
     }
 
     public void draw(float delta) {
@@ -324,13 +261,7 @@ public class PlayState extends State{
                     feedDaSnek.getScoreManager().updateScoreData(playerNameField.getText(), score);
                     feedDaSnek.getScoreManager().saveScoreData();
                     resetGame();
-                    Gdx.input.setInputProcessor(new InputAdapter(){
-                        @Override
-                        public boolean keyDown (int keycode) {
-                            processInput(keycode);
-                            return true;
-                        }
-                    });
+                    Gdx.input.setInputProcessor(inputHandler);
                 } else {
                     // Redirect to main menu
                     feedDaSnek.getPreferences().putString("playername", playerNameField.getText());
@@ -368,13 +299,7 @@ public class PlayState extends State{
      */
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(new InputAdapter(){
-            @Override
-            public boolean keyDown (int keycode) {
-                processInput(keycode);
-                return true;
-            }
-        });
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     @Override
