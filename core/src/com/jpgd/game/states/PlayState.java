@@ -70,7 +70,7 @@ public class PlayState extends State{
 
         playerNameField.setText(feedDaSnek.getPreferences().getString("playername", ""));
         hud = new Hud(feedDaSnek);
-        inputHandler = new InputHandler(snake);
+        inputHandler = new InputHandler(snake, feedDaSnek.getExtendViewport());
     }
 
 
