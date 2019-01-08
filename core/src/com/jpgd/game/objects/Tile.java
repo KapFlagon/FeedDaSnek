@@ -14,7 +14,7 @@ public class Tile {
      */
     private TextureRegion textureRegion;
     private Vector2 position;
-    private float width, height;
+    private float width, height, imageScaling;
     private int value;
     private boolean eaten;
 
@@ -25,6 +25,7 @@ public class Tile {
     public Tile(TextureRegion textureRegion) {
         this.position = new Vector2(0, 0);
         this.textureRegion = textureRegion;
+        this.imageScaling = 1;
         this.width = textureRegion.getRegionWidth();
         this.height = textureRegion.getRegionHeight();
         this.value = 0;
@@ -89,6 +90,12 @@ public class Tile {
 
     public void setEaten(boolean eaten) {
         this.eaten = eaten;
+    }
+
+    public void setImageScaling(float imageScaling) {
+        this.imageScaling = imageScaling;
+        this.width = width * imageScaling;
+        this.height = height * imageScaling;
     }
 
 

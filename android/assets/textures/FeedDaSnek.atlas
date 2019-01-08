@@ -4,79 +4,58 @@ size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Bird
-  rotate: false
-  xy: 966, 956
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
 FeedDaSnek_Background
   rotate: false
-  xy: 2, 190
+  xy: 2, 38
   size: 480, 800
   orig: 480, 800
   offset: 0, 0
   index: -1
 FeedDaSnek_Title
   rotate: false
-  xy: 484, 190
+  xy: 484, 38
   size: 480, 800
   orig: 480, 800
   offset: 0, 0
   index: -1
 Mouse
   rotate: false
-  xy: 2, 20
+  xy: 966, 822
   size: 16, 16
   orig: 16, 16
-  offset: 0, 0
-  index: -1
-PlayButton_Down
-  rotate: false
-  xy: 304, 38
-  size: 300, 150
-  orig: 300, 150
-  offset: 0, 0
-  index: -1
-PlayButton_Up
-  rotate: false
-  xy: 2, 38
-  size: 300, 150
-  orig: 300, 150
   offset: 0, 0
   index: -1
 Poison
-  rotate: false
-  xy: 984, 974
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-Snake_Body_B
-  rotate: false
-  xy: 966, 974
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-Snake_Body_S
-  rotate: false
-  xy: 606, 172
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-Snake_Head
   rotate: false
   xy: 20, 20
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-Snake_Tail
+Snake_Body_B
+  rotate: false
+  xy: 2, 20
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Snake_Body_S
   rotate: false
   xy: 2, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Snake_Head
+  rotate: false
+  xy: 984, 822
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Snake_Tail
+  rotate: false
+  xy: 966, 804
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

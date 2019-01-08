@@ -25,7 +25,7 @@ public class Snake {
     private Vector2 headPosition, tempDirectionVec;
     private Direction direction;
     private ArrayList<Vector2> bodyPoints;
-    private float texWidth, texHeight, speed, dt_total, rotationVal;
+    private float texWidth, texHeight, speed, dt_total, rotationVal, imageScaling;
     private ArrayList<Sound> deathSounds, eatSounds, sickSounds;
     private boolean snakeCanMove;
 
@@ -36,6 +36,7 @@ public class Snake {
      */
     public Snake(TextureAtlas textureAtlas) {
         randomizer = new Random();
+        imageScaling = 1;
         // Find texture regions in provided atlas
         head_TexReg = textureAtlas.findRegion("Snake_Head");
         tail_TexReg = textureAtlas.findRegion("Snake_Tail");
@@ -104,6 +105,12 @@ public class Snake {
         this.snakeCanMove = snakeCanMove;
     }
 
+    public void setImageScaling(float imageScaling){
+        this.imageScaling = imageScaling;
+        texHeight = texHeight * imageScaling;
+        texWidth = texWidth * imageScaling;
+    }
+
     /*
         Other methods
          */
@@ -168,20 +175,24 @@ public class Snake {
                 bodyPoints.add(new Vector2(headPosition.x, tempY));
             }
         }
-
+        System.out.println("positions generated");
+        printSnake();
     }
 
     public void move(float delta) {
         dt_total = dt_total + delta;
         //if (dt_total > 0.08f) {
         if (dt_total > speed) {
-            tempDirectionVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * 16)), (bodyPoints.get(0).y + (direction.getVector().y * 16)));
+            tempDirectionVec = new Vector2((bodyPoints.get(0).x + (direction.getVector().x * texHeight)), (bodyPoints.get(0).y + (direction.getVector().y * texHeight)));
 
             if (tempDirectionVec.epsilonEquals(bodyPoints.get(0))) {
                 // Do nothing
             } else {
+                System.out.println("before actual move");
+                printSnake();
                 bodyPoints.add(0, tempDirectionVec);
                 bodyPoints.remove(bodyPoints.size() - 1);
+                System.out.println("after actual move");
             }
             dt_total = 0;
         }
@@ -311,10 +322,10 @@ public class Snake {
         for(int bodyPointsIter = 0; bodyPointsIter < bodyPoints.size(); bodyPointsIter++) {
             if(bodyPointsIter == 0) {
                 rotationVal = determineHeadRotation();
-                spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (head_TexReg.getRegionWidth() / 2), (head_TexReg.getRegionHeight() / 2), head_TexReg.getRegionWidth(), head_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                spriteBatch.draw(head_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (texWidth / 2), (texHeight / 2), texWidth, texHeight, 1, 1, rotationVal);
             } else if (bodyPointsIter == (bodyPoints.size()-1)) {
                 rotationVal = determineRotation(bodyPoints.size()-1);
-                spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (tail_TexReg.getRegionWidth() / 2), (tail_TexReg.getRegionHeight() / 2), tail_TexReg.getRegionWidth(), tail_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                spriteBatch.draw(tail_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (texWidth / 2), (texHeight / 2), texWidth, texHeight, 1, 1, rotationVal);
             } else {
                 if(
                     // If last body point x is same as current body point, and next body point x is same as current body point use straight piece. OR, same checks for y positions.
@@ -322,14 +333,21 @@ public class Snake {
                     || ( (bodyPoints.get(bodyPointsIter-1).y) == (bodyPoints.get(bodyPointsIter).y) && (bodyPoints.get(bodyPointsIter+1).y) == (bodyPoints.get(bodyPointsIter).y) )
                         ) {
                     rotationVal = determineRotation(bodyPointsIter);
-                    spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyStraight_TexReg.getRegionWidth()/2), (bodyStraight_TexReg.getRegionHeight()/2), bodyStraight_TexReg.getRegionWidth(), bodyStraight_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                    spriteBatch.draw(bodyStraight_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (texWidth / 2), (texHeight / 2), texWidth, texHeight, 1, 1, rotationVal);
                 } else {
                     // Every other scenario, use bend piece
                     rotationVal = determineBendRotation(bodyPointsIter);
-                    spriteBatch.draw(bodyBend_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (bodyBend_TexReg.getRegionWidth()/2), (bodyBend_TexReg.getRegionHeight()/2), bodyBend_TexReg.getRegionWidth(), bodyBend_TexReg.getRegionHeight(), 1, 1, rotationVal);
+                    spriteBatch.draw(bodyBend_TexReg, bodyPoints.get(bodyPointsIter).x, bodyPoints.get(bodyPointsIter).y, (texWidth / 2), (texHeight / 2), texWidth, texHeight, 1, 1, rotationVal);
                 }
             }
             rotationVal = 0;
         }
+    }
+
+    public void printSnake() {
+        for(int iter = 0; iter < bodyPoints.size(); iter++) {
+            System.out.println("Position: " + iter + "\tX: " + bodyPoints.get(iter).x + "\tY: " + bodyPoints.get(iter).y + "\tWidth: " + texWidth + "\tHeight: " + texHeight);
+        }
+        System.out.println();
     }
 }

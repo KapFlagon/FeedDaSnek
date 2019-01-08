@@ -31,7 +31,7 @@ public class PlayState extends State{
     Variables
      */
     private Stage dialogStage;
-    private float dt_total;
+    private float dt_total, imageScaling;
     private Random randomizer;
     private Snake snake;
     private ArrayList<Food> foods;
@@ -63,6 +63,8 @@ public class PlayState extends State{
         assignSounds();
 
         dt_total = 0;
+        imageScaling = 1.75f;
+        snake.setImageScaling(imageScaling);
 
         resetGame();
         playerNameField = new TextField("", feedDaSnek.getGameAssetManager().getSkin());
@@ -153,13 +155,17 @@ public class PlayState extends State{
     }
 
     public void initializeFoods() {
+        Food tempFood = new Food(textureAtlas);
+        tempFood.setImageScaling(imageScaling);
         foods.clear();
-        foods.add(new Food(textureAtlas));
+        foods.add(tempFood);
     }
 
     public void initializeObstacles() {
+        Obstacle tempObstacle = new Obstacle((textureAtlas));
+        tempObstacle.setImageScaling(imageScaling);
         obstacles.clear();
-        obstacles.add(new Obstacle(textureAtlas));
+        obstacles.add(tempObstacle);
     }
 
     public void initializePositions() {
@@ -179,13 +185,17 @@ public class PlayState extends State{
     }
 
     public void updateFoodsAndObstacles() {
-        float increment = (float) Math.floor(score / 100);
+        float increment = (float) Math.floor(score / 1000);
+        Food tempFood = new Food(textureAtlas);
+        tempFood.setImageScaling(imageScaling);
+        Obstacle tempObstacle = new Obstacle(textureAtlas);
+        tempObstacle.setImageScaling(imageScaling);
         if (score != 0) {
             // Get the nearest lower increment
             if( ((foods.size() - 1) < increment) && ((obstacles.size() - 1) < increment) ) { // If the size of the arraylists (minus 1) is less than or equal to the increment, add a Food object
-                foods.add(new Food(textureAtlas));
+                foods.add(tempFood);
                 generateTilePosition(foods.get(foods.size() - 1));
-                obstacles.add(new Obstacle(textureAtlas));
+                obstacles.add(tempObstacle);
                 generateTilePosition(obstacles.get(obstacles.size() - 1));
             } else if( ((foods.size() - 1) > increment) && ((obstacles.size() - 1) > increment) ) {  // if the size is greater than the increment then remove an entry
                 foods.remove(foods.size() - 1);
