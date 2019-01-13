@@ -175,8 +175,6 @@ public class Snake {
                 bodyPoints.add(new Vector2(headPosition.x, tempY));
             }
         }
-        System.out.println("positions generated");
-        printSnake();
     }
 
     public void move(float delta) {
@@ -188,11 +186,8 @@ public class Snake {
             if (tempDirectionVec.epsilonEquals(bodyPoints.get(0))) {
                 // Do nothing
             } else {
-                System.out.println("before actual move");
-                printSnake();
                 bodyPoints.add(0, tempDirectionVec);
                 bodyPoints.remove(bodyPoints.size() - 1);
-                System.out.println("after actual move");
             }
             dt_total = 0;
         }

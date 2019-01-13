@@ -90,7 +90,7 @@ public class FeedDaSnek extends Game {
 		extendViewport = new ExtendViewport(V_WIDTH, V_HEIGHT, orthographicCamera);
 		//orthographicCamera.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		//orthographicCamera.update();
-		preferences = Gdx.app.getPreferences("Preferences");
+		preferences = Gdx.app.getPreferences("FeedDaSnekPreferences");
 		scoreManager = new ScoreManager(this);
 		scoreManager.loadScoreData();
 

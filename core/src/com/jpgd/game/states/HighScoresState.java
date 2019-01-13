@@ -25,6 +25,7 @@ public class HighScoresState extends State {
         super(feedDaSnek);
         window = new Window("High Scores", feedDaSnek.getGameAssetManager().getSkin());
         window.setSkin(feedDaSnek.getGameAssetManager().getSkin());
+        window.setScale(FeedDaSnek.TEXT_SCALE);
         //window.setFillParent(true);
         window.align(Align.center);
 
@@ -62,8 +63,9 @@ public class HighScoresState extends State {
 
         // Packs the window to the size of the child elements
         window.pack();
+        window.setSize(((getExtendViewport().getMinWorldWidth() / 5) * 4) / FeedDaSnek.TEXT_SCALE, window.getHeight());
 
-        window.setPosition((getExtendViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getExtendViewport().getMinWorldHeight() - window.getHeight()) / 2);
+        window.setPosition((getExtendViewport().getMinWorldWidth() - (window.getWidth() * FeedDaSnek.TEXT_SCALE)) / 2 , (getExtendViewport().getMinWorldHeight() - (window.getHeight() * FeedDaSnek.TEXT_SCALE)) / 2);
 
         stateStage.addActor(window);
     }

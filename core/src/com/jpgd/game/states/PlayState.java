@@ -82,7 +82,7 @@ public class PlayState extends State{
     public void update(float delta) {
 
         // Check if snake head moves out of bounds
-        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= getExtendViewport().getMinWorldWidth()) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= getExtendViewport().getMinWorldHeight()) {
+        if((snake.getBodyPoints().get(0).x < 0) || (snake.getBodyPoints().get(0).x >= (getExtendViewport().getMinWorldWidth() - snake.getTexWidth())) || (snake.getBodyPoints().get(0).y < 0) || snake.getBodyPoints().get(0).y >= (getExtendViewport().getMinWorldHeight() - snake.getTexHeight())) {
             // Snake has extended outside of boundaries of screen, game over
             if(snake.getSnakeCanMove() == true) {
                 snake.die(feedDaSnek.getAudioManager());
@@ -138,6 +138,7 @@ public class PlayState extends State{
     }
 
     public void draw(float delta) {
+        hud.getHudStage().draw();
         spriteBatch.begin();
 
         snake.render(spriteBatch);
@@ -151,7 +152,6 @@ public class PlayState extends State{
         }
 
         spriteBatch.end();
-        hud.getHudStage().draw();
     }
 
     public void initializeFoods() {
@@ -282,6 +282,7 @@ public class PlayState extends State{
                 }
             }
         };
+        dialog.setScale(FeedDaSnek.TEXT_SCALE);
         dialog.text(gameOver.getReason());
         dialog.getContentTable().row();
 
@@ -301,6 +302,7 @@ public class PlayState extends State{
         dialog.button("Play Again", 1L);
         dialog.button("Main Menu", 2L);
         dialog.show(dialogStage);
+        dialog.setPosition((getExtendViewport().getMinWorldWidth() - (dialog.getWidth() * FeedDaSnek.TEXT_SCALE)) / 2 , (getExtendViewport().getMinWorldHeight() - (dialog.getHeight()* FeedDaSnek.TEXT_SCALE)) / 2);
     }
 
 

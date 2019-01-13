@@ -92,8 +92,8 @@ public class StartState extends State {
             }
         });
 
-        table.add(howToPlayButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);
-        table.row();
+        //table.add(howToPlayButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);
+        //table.row();
         table.add(playButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);;
         table.row();
         table.add(optionsButton).size((getExtendViewport().getMinWorldWidth() / 5) * 3, (getExtendViewport().getMinWorldHeight() / 20) * 2);;

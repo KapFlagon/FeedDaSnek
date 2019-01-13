@@ -38,6 +38,7 @@ public class OptionsState extends State {
 
         window = new Window("Options", feedDaSnek.getGameAssetManager().getSkin());
         window.setSkin(feedDaSnek.getGameAssetManager().getSkin());
+        window.setScale(FeedDaSnek.TEXT_SCALE);
         //window.setFillParent(true);
         window.align(Align.center);
 
@@ -136,21 +137,21 @@ public class OptionsState extends State {
      */
     public void buildTable() {
         window.layout();
-        window.add(checkBoxMusic).pad(5);
-        window.add(checkBoxSfx).pad(5);
+        window.add(checkBoxMusic).pad(8);
+        window.add(checkBoxSfx).pad(8);
         window.row();
-        window.add(label_volumeMusic).pad(5);
-        window.add(sliderMusic).pad(5);
+        window.add(label_volumeMusic).pad(8);
+        window.add(sliderMusic).pad(8);
         window.row();
-        window.add(label_volumeSfx).pad(5);
-        window.add(sliderSfx).pad(5);
+        window.add(label_volumeSfx).pad(8);
+        window.add(sliderSfx).pad(8);
         window.row();
-        window.add(submitButton).pad(5);
-        window.add(backButton).pad(5);
+        window.add(submitButton).pad(8);
+        window.add(backButton).pad(8);
 
         // Packs the window to the size of the child elements
         window.pack();
-        window.setPosition((getExtendViewport().getMinWorldWidth() - window.getWidth()) / 2 , (getExtendViewport().getMinWorldHeight() - window.getHeight()) / 2);
+        window.setPosition((getExtendViewport().getMinWorldWidth() - (window.getWidth() * FeedDaSnek.TEXT_SCALE)) / 2 , (getExtendViewport().getMinWorldHeight() - (window.getHeight()* FeedDaSnek.TEXT_SCALE)) / 2);
 
         stateStage.addActor(window);
     }

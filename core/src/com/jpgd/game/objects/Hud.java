@@ -33,7 +33,9 @@ public class Hud implements Disposable {
         labelStyle = new Label.LabelStyle(feedDaSnek.getGameAssetManager().getFont(), Color.WHITE);
 
         scoreText = new Label("Score: ", labelStyle);
+        scoreText.setFontScale(FeedDaSnek.TEXT_SCALE);
         scoreValue = new Label("", labelStyle);
+        scoreValue.setFontScale(FeedDaSnek.TEXT_SCALE);
 
         table = new Table();
         table.top();
